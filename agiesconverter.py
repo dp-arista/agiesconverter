@@ -305,8 +305,8 @@ def choose():
     d = dec.lower()
     if d == "no":
         global filename
-        #fil = input("Please type the .csv filename(ex:junosconf.csv):")
-        fil = "junosconftest.csv"
+        fil = input("Please type the .csv filename(ex:/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv):")
+        #fil = "/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"
         filename = fil.strip()
         readcsv();
     elif d == "yes":
