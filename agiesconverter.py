@@ -1,9 +1,7 @@
 #! /usr/bin/env python3
 #SHEBANG
 import re
-import json
 #read this prgrom from bottom to top for understanding
-
 #assign next filtername to filtername variable and start search
 def check():
     try:
@@ -67,11 +65,39 @@ def aclinitial():
 
 def aclprosrcdestport():
     with open("eosaclconf.csv","a") as eos:
+        rowcount  = 0
         for srcad in srcadds:
             for destad in destadds:
                 eos.write(f"\n")
-                eos.write(f"{deci} {protocol} {srcad} {destad} eq {port}")
-                print(f"{deci} {protocol} {srcad} {destad} eq {port}")
+                #Setting initial value of the counter to zero
+                rowcount  = 0
+                #iterating through the whole file
+                for row in open("/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"):
+                    #print(row)
+                    if "port" in row:
+                        portrow=rowcount
+                    rowcount+= 1
+                #print(portrow)
+                rowcount  = 0
+                for row in open("/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"):
+                    if "destination" in row:
+                        destrow=rowcount  
+                    rowcount+= 1
+                #print(destrow) 
+                if portrow > destrow:
+                    eos.write(f"{deci} {protocol} {srcad} {destad} eq {port}")
+                    print(f"{deci} {protocol} {srcad} {destad} eq {port}")
+                else:
+                    eos.write(f"{deci} {protocol} {srcad} eq {port} {destad} ")
+                    print(f"{deci} {protocol} {srcad} eq {port} {destad} ")               
+
+def aclprosrcdest():
+    with open("eosaclconf.csv","a") as eos:
+        for srcad in srcadds:
+            for destad in destadds:
+                eos.write(f"\n")
+                eos.write(f"{deci} {protocol} {srcad} {destad}")
+                print(f"{deci} {protocol} {srcad} {destad}")
 
 def aclcount():
     with open("eosaclconf.csv","a") as eos:
@@ -102,14 +128,10 @@ def agiesdst():
 def agiesprosrcdestport():
     with open("eosagiesconf.csv","a") as eos:
         eos.write("\n")
-        eos.write(f"traffic-policy {comment}")
-        eos.write("\n")
-        eos.write(f"match {comment} ipv4")
-        eos.write("\n")
-        eos.write(f"source prefix field-set {filtername}-source")
-        eos.write("\n")
-        eos.write(f"destination prefix field-set {filtername}-destination")
-        eos.write("\n")
+        eos.write(f"traffic-policy {comment}\n")
+        eos.write(f"match {comment} ipv4\n")
+        eos.write(f"source prefix field-set {filtername}-source\n")
+        eos.write(f"destination prefix field-set {filtername}-destination\n")
         for protoco in protocols:
             eos.write(f"protocol {protoco} destination port {port}")
         print("traffic-policies")
@@ -126,20 +148,60 @@ def agiesprosrcdestport():
         for protoco in protocols:
             print(f"protocol {protoco} destination port {port}")
 
+def agiesprosrcdest():
+    with open("eosagiesconf.csv","a") as eos:
+        eos.write("\n")
+        eos.write(f"traffic-policy {comment}\n")
+        eos.write(f"match {comment} ipv4\n")
+        eos.write(f"source prefix field-set {filtername}-source\n")
+        eos.write(f"destination prefix field-set {filtername}-destination\n")
+        for protoco in protocols:
+            eos.write(f"protocol {protoco}")
+        print("traffic-policies")
+        print(f"field-set ipv4 prefix {filtername}-source")
+        for srcad in srcadds:
+            print(f"{srcadd}")  
+        print(f"field-set ipv4 prefix {filtername}-destination")              
+        for destad in destadds:
+            print(f"{destadd}")
+        print(f"traffic-policy {comment}")
+        print(f"match {comment} ipv4")
+        print(f"source prefix field-set {filtername}-source")
+        print(f"destination prefix field-set {filtername}-destination")
+        for protoco in protocols:
+            print(f"protocol {protoco}")
+
 #convert the junos command to eos command
 def convert():
     try:
-        if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0:
-            print("\nGenerating ACL....")     
-            aclinitial()
-            aclprosrcdestport()
-            aclcount()
-            print("\nGenerating Agies Conf....")     
-            agiesinitial()
-            agiessource()
-            agiesdst()
-            agiesprosrcdestport()
-            print("\n Completed configruation generation.... \n")
+        try:
+            if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0:
+                print("\nGenerating ACL....")     
+                aclinitial()
+                aclprosrcdestport()
+                aclcount()
+                print("\nGenerating Agies Conf....")     
+                agiesinitial()
+                agiessource()
+                agiesdst()
+                agiesprosrcdestport()
+                print("\n Completed configruation generation.... \n")
+        except:
+            i=0
+        try:
+            if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0:
+                print("\nGenerating ACL....")     
+                aclinitial()
+                aclprosrcdest()
+                aclcount()
+                print("\nGenerating Agies Conf....")     
+                agiesinitial()
+                agiessource()
+                agiesdst()
+                agiesprosrcdest()
+                print("\n Completed configruation generation.... \n")
+        except:
+            i=0
     except Exception as e: 
         print(e)
         print("This looks new type of configuration. Inform developer to add this")
@@ -156,8 +218,6 @@ def parse():
                     try:
                         if "source-address" in r1:
                             a = re.search(rf'\b(source-address)\b', r1)
-                            #print(a.end())
-                            #print(f)
                             fi = a.end()+1; 
                             l = len(r1)
                             o = r1[fi:l]
@@ -172,8 +232,6 @@ def parse():
                     try:
                         if "destination-address" in r1:
                             a = re.search(rf'\b(destination-address)\b', r1)
-                            #print(a.end())
-                            #print(f)
                             fi = a.end()+1; 
                             l = len(r1)
                             o = r1[fi:l]
@@ -188,8 +246,6 @@ def parse():
                     try:
                         if "protocol" in r1:
                             a = re.search(rf'\b(protocol)\b', r1)
-                            #print(a.end())
-                            #print(f)
                             fi = a.end()+1; 
                             l = len(r1)
                             o = r1[fi:l]
@@ -204,8 +260,6 @@ def parse():
                     try:
                         if "port" in r1:
                             a = re.search(rf'\b(port)\b', r1)
-                            #print(a.end())
-                            #print(f)
                             fi = a.end()+1; 
                             l = len(r1)
                             o = r1[fi:l]
@@ -218,8 +272,6 @@ def parse():
                     try:
                         if "count" in r1:
                             a = re.search(rf'\b(count)\b', r1)
-                            #print(a.end())
-                            #print(f)
                             fi = a.end()+1; 
                             l = len(r1)
                             o = r1[fi:l]
@@ -305,8 +357,9 @@ def choose():
     d = dec.lower()
     if d == "no":
         global filename
-        fil = input("Please type the .csv filename(ex:/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv):")
-        #fil = "/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"
+        #fil = input("Please type the .csv filename(ex:/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv):")
+        fil = "/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"
+        #fil = "junosconftest.csv"
         filename = fil.strip()
         readcsv();
     elif d == "yes":
