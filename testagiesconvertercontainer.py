@@ -1,9 +1,13 @@
 #! /usr/bin/env python3
 #SHEBANG
 import re
+#from convert import *
+#from conditions import *
 import sys, os
+#from convert import convert
 #read this prgrom from bottom to top for understanding
 #assign next filtername to filtername variable and start search
+
 def check():
     try:
         if filtername1 != 0:
@@ -13,10 +17,13 @@ def check():
             print(f"Filter name: {filtername}")
             print(f"Term name: {comment}")
             print("Found different filternames and terms in csv we support only one filter set conversion at this time")
+            #parse() 
     except:
         i=0;
+    
 #read the next filtername
 def nextiteration():
+    #value = count+1
     with open(filename,"r") as file1:
         n1 = file1.readlines();
         global r1
@@ -25,24 +32,34 @@ def nextiteration():
                 continue
             else:
                 a = re.search(r'\b(filter)\b', r1)
+                #print(a.end())
+                #print(f)
                 fi = a.end()+1;
+                #print(fi)
+                #print(r)
                 l = len(r1)
+                #print(l)
                 o = r1[fi:l]
                 g = o.split(' ')
                 global filtername1
                 filtername1 = g[0]
                 try:
                     a = re.search(r'\b(term)\b', r1)
+                    #print(a.end())
+                    #print(f)
                     fi = a.end()+1; 
                     l = len(r1)
                     o = r1[fi:l]
                     g = o.split(' ')
                     global comment1
                     comment1 = g[0].strip()
+                    #print(f"Term: {comment1}")
                 except:
+                    #print("No term")
                     i=0;
                 check()
                 break
+
 
 def aclinitial():
     with open("eosaclconf.csv","a") as eos:
@@ -58,16 +75,21 @@ def aclprosrcdestport():
         for srcad in srcadds:
             for destad in destadds:
                 eos.write(f"\n")
+                #Setting initial value of the counter to zero
                 rowcount  = 0
-                for row in open(filename):
+                #iterating through the whole file
+                for row in open("/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"):
+                    #print(row)
                     if "port" in row:
                         portrow=rowcount
                     rowcount+= 1
+                #print(portrow)
                 rowcount  = 0
-                for row in open(filename):
+                for row in open("/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"):
                     if "destination" in row:
                         destrow=rowcount  
                     rowcount+= 1
+                #print(destrow) 
                 if portrow > destrow:
                     eos.write(f"{deci} {protocol} {srcad} {destad} eq {port}")
                     print(f"{deci} {protocol} {srcad} {destad} eq {port}")
@@ -154,8 +176,9 @@ def agiesprosrcdest():
         print(f"destination prefix field-set {filtername}-destination")
         for protoco in protocols:
             print(f"protocol {protoco}")
-#conversion process
+
 def convert():
+    #print(parse.srcadd)
     try:
         try:
             if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0:
@@ -189,6 +212,8 @@ def convert():
         print(e)
         print("This looks new type of configuration. Inform developer to add this")
     nextiteration()
+
+
 #parse junos command for filtername
 def parse():
     with open(filename,"r") as file1:
@@ -208,7 +233,9 @@ def parse():
                             srcadd = g[0].strip()
                             srcadds.append(srcadd)
                             print(f"Found ipv4 source address: {srcadds}")
+                            #return(srcadd)
                     except:
+                            #print("No then")
                             i=0;
                     try:
                         if "destination-address" in r1:
@@ -222,6 +249,7 @@ def parse():
                             destadds.append(destadd)
                             print(f"Found ipv4 destination address: {destadds}")
                     except:
+                            #print("No then")
                             i=0;
                     try:
                         if "protocol" in r1:
@@ -235,6 +263,7 @@ def parse():
                             protocols.append(protocol)
                             print(f"Found protocol: {protocol}")
                     except:
+                            #print("No then")
                             i=0;
                     try:
                         if "port" in r1:
@@ -268,17 +297,24 @@ def parse():
                             deci = "deny"
                         print(f"Found decision: {deci}")
                     except:
+                            #print("No then")
                             i=0;
     print(f"\nComplete Input: \n{inputs}")
     print("\nStarting conversion process...")
-    convert()     
+    convert()
+                    
 #parse junos command for filtername
 def getfiltername():
     #find the group name
     f = r.index("filter")
     a = re.search(r'\b(filter)\b', r)
+    #print(a.end())
+    #print(f)
     fi = a.end()+1;
+    #print(fi)
+    #print(r)
     l = len(r)
+    #print(l)
     o = r[fi:l]
     g = o.split(' ')
     global filtername
@@ -287,6 +323,8 @@ def getfiltername():
     print(f"Filtername: {filtername}")
     try:
         a = re.search(r'\b(term)\b', r)
+        #print(a.end())
+        #print(f)
         fi = a.end()+1; 
         l = len(r)
         o = r[fi:l]
@@ -315,8 +353,10 @@ def getfiltername():
 def precheck():
     if "set firewall" in r:
         if "filter" in r:
+            #print("filter")
             getfiltername()
     else:
+        #print("Does not looks like a junos command. Please check the input")
         i=0;
 
 #read the csv
@@ -325,13 +365,31 @@ def readcsv():
         n = file.readlines();
         global r
         r = n[0]
+        #for r in n:
+            #print(r);
         precheck()
             
+
 #choose to read from csv or from manual command
 def choose():
-    global filename
-    filename = "junosconftest.csv"
-    readcsv();
+    #decision = input("Type yes if you want to enter the junos command or no to read from csv file?[yes/no]:")
+    decision = "no"
+    dec = decision.strip()
+    d = dec.lower()
+    if d == "no":
+        global filename
+        #fil = input("Please type the .csv filename(ex:/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv):")
+        fil = "/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"
+        #fil = "junosconftest.csv"
+        filename = fil.strip()
+        readcsv();
+    elif d == "yes":
+        global r
+        r = input("Enter the junos command to convert:")
+        precheck();
+    else:
+        print("Please type only yes or no");
+        choose()
     
 def main():
     global srcadds
