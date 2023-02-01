@@ -1,8 +1,13 @@
 #! /usr/bin/env python3
 #SHEBANG
 import re
+#from convert import *
+#from conditions import *
+import sys, os
+#from convert import convert
 #read this prgrom from bottom to top for understanding
 #assign next filtername to filtername variable and start search
+
 def check():
     try:
         if filtername1 != 0:
@@ -54,6 +59,7 @@ def nextiteration():
                     i=0;
                 check()
                 break
+
 
 def aclinitial():
     with open("eosaclconf.csv","a") as eos:
@@ -171,8 +177,8 @@ def agiesprosrcdest():
         for protoco in protocols:
             print(f"protocol {protoco}")
 
-#convert the junos command to eos command
 def convert():
+    #print(parse.srcadd)
     try:
         try:
             if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0:
@@ -207,6 +213,7 @@ def convert():
         print("This looks new type of configuration. Inform developer to add this")
     nextiteration()
 
+
 #parse junos command for filtername
 def parse():
     with open(filename,"r") as file1:
@@ -226,6 +233,7 @@ def parse():
                             srcadd = g[0].strip()
                             srcadds.append(srcadd)
                             print(f"Found ipv4 source address: {srcadds}")
+                            #return(srcadd)
                     except:
                             #print("No then")
                             i=0;
@@ -325,8 +333,21 @@ def getfiltername():
         comment = g[0].strip()
         print(f"Term: {comment}")
         parse()
-    except Exception as e: 
-        print(e)
+    except Exception as ex:
+        trace = []
+        tb = ex.__traceback__
+        while tb is not None:
+            trace.append({
+                "filename": tb.tb_frame.f_code.co_filename,
+                "name": tb.tb_frame.f_code.co_name,
+                "lineno": tb.tb_lineno
+            })
+            tb = tb.tb_next
+        print(str({
+            'type': type(ex).__name__,
+            'message': str(ex),
+            'trace': trace
+        }))
 
 #do the precheck
 def precheck():
