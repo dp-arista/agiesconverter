@@ -1,7 +1,0 @@
-ip access-list EDGE-L3MOSS-IN
-!!10
-permit tcp 4.33.69.224/29 4.33.69.232/29 eq bgp
-permit tcp 4.33.69.224/29 4.33.69.224/29 eq bgp
-permit tcp 4.33.69.232/29 4.33.69.232/29 eq bgp
-permit tcp 4.33.69.232/29 4.33.69.224/29 eq bgp
-counter per-entry
