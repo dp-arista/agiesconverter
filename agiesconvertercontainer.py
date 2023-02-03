@@ -333,7 +333,7 @@ def readcsv():
 #choose to read from csv or from manual command
 def choose():
     global filename
-    filename = "/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"
+    filename = "junosconftest.csv"
     readcsv();
     
 def main():
