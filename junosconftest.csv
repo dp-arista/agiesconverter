@@ -1,11 +1,8 @@
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from source-address 4.33.69.224/29
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from source-address 4.33.69.232/29
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from source-address 4.33.97.141/32
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from source-address 4.33.97.143/32
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from source-address 4.33.97.173/32
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from source-address 4.33.97.175/32
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from destination-address 4.33.69.232/29
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from destination-address 4.33.69.224/29
-set firewall family inet filter EDGE-L3MOSS-IN term 40 from protocol icmp
-set firewall family inet filter EDGE-L3MOSS-IN term 40 then count term40
-set firewall family inet filter EDGE-L3MOSS-IN term 40 then accept
+set firewall family inet filter EDGE-L3MOSS-IN term 10 from source-address 4.33.69.224/29
+set firewall family inet filter EDGE-L3MOSS-IN term 10 from source-address 4.33.69.232/29
+set firewall family inet filter EDGE-L3MOSS-IN term 10 from destination-address 4.33.69.232/29
+set firewall family inet filter EDGE-L3MOSS-IN term 10 from destination-address 4.33.69.224/29
+set firewall family inet filter EDGE-L3MOSS-IN term 10 from protocol tcp
+set firewall family inet filter EDGE-L3MOSS-IN term 10 from port bgp
+set firewall family inet filter EDGE-L3MOSS-IN term 10 then count term10
+set firewall family inet filter EDGE-L3MOSS-IN term 10 then accept

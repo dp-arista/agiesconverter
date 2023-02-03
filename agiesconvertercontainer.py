@@ -4,6 +4,7 @@ import re
 import sys, os
 #read this prgrom from bottom to top for understanding
 #assign next filtername to filtername variable and start search
+#end= 1-continue ; 0-stop
 def check():
     try:
         if filtername1 != 0:
@@ -14,7 +15,7 @@ def check():
             print(f"Term name: {comment}")
             print("Found different filternames and terms in csv we support only one filter set conversion at this time")
     except:
-        i=0;
+        end=1;
 #read the next filtername
 def nextiteration():
     with open(filename,"r") as file1:
@@ -40,7 +41,7 @@ def nextiteration():
                     global comment1
                     comment1 = g[0].strip()
                 except:
-                    i=0;
+                    end=1;
                 check()
                 break
 
@@ -155,40 +156,42 @@ def agiesprosrcdest():
         for protoco in protocols:
             print(f"protocol {protoco}")
 #conversion process
+#remember majority conditions goes first
 def convert():
+    end = 1
     try:
-        try:
-            if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0:
-                print("\nGenerating ACL....")     
-                aclinitial()
-                aclprosrcdestport()
-                aclcount()
-                print("\nGenerating Agies Conf....")     
-                agiesinitial()
-                agiessource()
-                agiesdst()
-                agiesprosrcdestport()
-                print("\n Completed configruation generation.... \n")
-        except:
-            i=0
-        try:
-            if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0:
-                print("\nGenerating ACL....")     
-                aclinitial()
-                aclprosrcdest()
-                aclcount()
-                print("\nGenerating Agies Conf....")     
-                agiesinitial()
-                agiessource()
-                agiesdst()
-                agiesprosrcdest()
-                print("\n Completed configruation generation.... \n")
-        except:
-            i=0
-    except Exception as e: 
-        print(e)
-        print("This looks new type of configuration. Inform developer to add this")
-    nextiteration()
+        #remember majority conditions goes first
+        if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0 and end != 0:
+            print("\nGenerating ACL....")     
+            aclinitial()
+            aclprosrcdestport()
+            aclcount()
+            print("\nGenerating Agies Conf....")     
+            agiesinitial()
+            agiessource()
+            agiesdst()
+            agiesprosrcdestport()
+            print("\n Completed configruation generation.... \n")
+            nextiteration()
+            end = 0
+    except:
+        end = 1
+    try:
+        if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0 and end != 0:
+            print("\nGenerating ACL....")     
+            aclinitial()
+            aclprosrcdest()
+            aclcount()
+            print("\nGenerating Agies Conf....")     
+            agiesinitial()
+            agiessource()
+            agiesdst()
+            agiesprosrcdest()
+            print("\n Completed configruation generation.... \n")
+            nextiteration()
+            end = 0   
+    except: 
+        end = 1
 #parse junos command for filtername
 def parse():
     with open(filename,"r") as file1:
@@ -209,7 +212,7 @@ def parse():
                             srcadds.append(srcadd)
                             print(f"Found ipv4 source address: {srcadds}")
                     except:
-                            i=0;
+                            end=1;
                     try:
                         if "destination-address" in r1:
                             a = re.search(rf'\b(destination-address)\b', r1)
@@ -222,7 +225,7 @@ def parse():
                             destadds.append(destadd)
                             print(f"Found ipv4 destination address: {destadds}")
                     except:
-                            i=0;
+                            end=1;
                     try:
                         if "protocol" in r1:
                             a = re.search(rf'\b(protocol)\b', r1)
@@ -235,7 +238,7 @@ def parse():
                             protocols.append(protocol)
                             print(f"Found protocol: {protocol}")
                     except:
-                            i=0;
+                            end=1;
                     try:
                         if "port" in r1:
                             a = re.search(rf'\b(port)\b', r1)
@@ -268,7 +271,7 @@ def parse():
                             deci = "deny"
                         print(f"Found decision: {deci}")
                     except:
-                            i=0;
+                            end=1;
     print(f"\nComplete Input: \n{inputs}")
     print("\nStarting conversion process...")
     convert()     
@@ -317,7 +320,7 @@ def precheck():
         if "filter" in r:
             getfiltername()
     else:
-        i=0;
+        end=1;
 
 #read the csv
 def readcsv():
@@ -330,7 +333,7 @@ def readcsv():
 #choose to read from csv or from manual command
 def choose():
     global filename
-    filename = "junosconftest.csv"
+    filename = "/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"
     readcsv();
     
 def main():
