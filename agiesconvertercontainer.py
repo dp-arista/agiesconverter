@@ -1,55 +1,13 @@
 #! /usr/bin/env python3
 #SHEBANG
 import re
-import sys, os
-#read this prgrom from bottom to top for understanding
-#assign next filtername to filtername variable and start search
-#end= 1-continue ; 0-stop
-def check():
-    try:
-        if filtername1 != 0:
-            filtername = filtername1
-            comment = comment1
-            print("Starting next config conversion....\n")
-            print(f"Filter name: {filtername}")
-            print(f"Term name: {comment}")
-            print("Found different filternames and terms in csv we support only one filter set conversion at this time")
-    except:
-        end=1;
-#read the next filtername
-def nextiteration():
-    with open(filename,"r") as file1:
-        n1 = file1.readlines();
-        global r1
-        for r1 in n1:
-            if filtername and comment in r1:
-                continue
-            else:
-                a = re.search(r'\b(filter)\b', r1)
-                fi = a.end()+1;
-                l = len(r1)
-                o = r1[fi:l]
-                g = o.split(' ')
-                global filtername1
-                filtername1 = g[0]
-                try:
-                    a = re.search(r'\b(term)\b', r1)
-                    fi = a.end()+1; 
-                    l = len(r1)
-                    o = r1[fi:l]
-                    g = o.split(' ')
-                    global comment1
-                    comment1 = g[0].strip()
-                except:
-                    end=1;
-                check()
-                break
+#read this prgram from bottom to top for understanding
 
 def aclinitial():
     with open("eosaclconf.csv","a") as eos:
-        eos.write(f"ip access-list {filtername}")
-        eos.write(f"\n")
-        eos.write(f"!!{comment}")
+        #eos.write("\n\n")
+        eos.write(f"\n\nip access-list {filtername}")
+        eos.write(f"\n!!{comment}")
         print(f"ip access-list {filtername}")
         print(f"!!{comment}")
 
@@ -59,16 +17,21 @@ def aclprosrcdestport():
         for srcad in srcadds:
             for destad in destadds:
                 eos.write(f"\n")
+                #Setting initial value of the counter to zero
                 rowcount  = 0
+                #iterating through the whole file
                 for row in open(filename):
+                    #print(row)
                     if "port" in row:
                         portrow=rowcount
                     rowcount+= 1
+                #print(portrow)
                 rowcount  = 0
                 for row in open(filename):
                     if "destination" in row:
                         destrow=rowcount  
                     rowcount+= 1
+                #print(destrow) 
                 if portrow > destrow:
                     eos.write(f"{deci} {protocol} {srcad} {destad} eq {port}")
                     print(f"{deci} {protocol} {srcad} {destad} eq {port}")
@@ -86,34 +49,28 @@ def aclprosrcdest():
 
 def aclcount():
     with open("eosaclconf.csv","a") as eos:
-        eos.write("\n")
-        eos.write("counter per-entry")
+        eos.write("\ncounter per-entry")
         print("counter per-entry")
 
 def agiesinitial():
     with open("eosagiesconf.csv","a") as eos:
-        eos.write("traffic-policies")
-        eos.write("\n")
+        eos.write("\n\ntraffic-policies\n")
 
 def agiessource():
     with open("eosagiesconf.csv","a") as eos:
         eos.write(f"field-set ipv4 prefix {filtername}-source")
         for srcad in srcadds:
-            eos.write(f"\n")
-            eos.write(f"{srcadd}")  
+            eos.write(f"\n{srcad}")  
 
 def agiesdst():
     with open("eosagiesconf.csv","a") as eos:
-        eos.write(f"\n")
-        eos.write(f"field-set ipv4 prefix {filtername}-destination")              
+        eos.write(f"\nfield-set ipv4 prefix {filtername}-destination")              
         for destad in destadds:
-            eos.write(f"\n")
-            eos.write(f"{destadd}")          
+            eos.write(f"\n{destad}")          
 
 def agiesprosrcdestport():
     with open("eosagiesconf.csv","a") as eos:
-        eos.write("\n")
-        eos.write(f"traffic-policy {comment}\n")
+        eos.write(f"\ntraffic-policy {comment}\n")
         eos.write(f"match {comment} ipv4\n")
         eos.write(f"source prefix field-set {filtername}-source\n")
         eos.write(f"destination prefix field-set {filtername}-destination\n")
@@ -122,10 +79,10 @@ def agiesprosrcdestport():
         print("traffic-policies")
         print(f"field-set ipv4 prefix {filtername}-source")
         for srcad in srcadds:
-            print(f"{srcadd}")  
+            print(f"{srcad}")  
         print(f"field-set ipv4 prefix {filtername}-destination")              
         for destad in destadds:
-            print(f"{destadd}")
+            print(f"{destad}")
         print(f"traffic-policy {comment}")
         print(f"match {comment} ipv4")
         print(f"source prefix field-set {filtername}-source")
@@ -135,8 +92,7 @@ def agiesprosrcdestport():
 
 def agiesprosrcdest():
     with open("eosagiesconf.csv","a") as eos:
-        eos.write("\n")
-        eos.write(f"traffic-policy {comment}\n")
+        eos.write(f"\ntraffic-policy {comment}\n")
         eos.write(f"match {comment} ipv4\n")
         eos.write(f"source prefix field-set {filtername}-source\n")
         eos.write(f"destination prefix field-set {filtername}-destination\n")
@@ -145,23 +101,23 @@ def agiesprosrcdest():
         print("traffic-policies")
         print(f"field-set ipv4 prefix {filtername}-source")
         for srcad in srcadds:
-            print(f"{srcadd}")  
+            print(f"{srcad}")  
         print(f"field-set ipv4 prefix {filtername}-destination")              
         for destad in destadds:
-            print(f"{destadd}")
+            print(f"{destad}")
         print(f"traffic-policy {comment}")
         print(f"match {comment} ipv4")
         print(f"source prefix field-set {filtername}-source")
         print(f"destination prefix field-set {filtername}-destination")
         for protoco in protocols:
             print(f"protocol {protoco}")
-#conversion process
 #remember majority conditions goes first
 def convert():
     end = 1
+    localend = 1
     try:
         #remember majority conditions goes first
-        if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0 and end != 0:
+        if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating ACL....")     
             aclinitial()
             aclprosrcdestport()
@@ -172,12 +128,13 @@ def convert():
             agiesdst()
             agiesprosrcdestport()
             print("\n Completed configruation generation.... \n")
-            nextiteration()
-            end = 0
+            localend = 0 
+            #nextiteration()
     except:
         end = 1
+        localend = 1
     try:
-        if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0 and end != 0:
+        if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating ACL....")     
             aclinitial()
             aclprosrcdest()
@@ -188,116 +145,161 @@ def convert():
             agiesdst()
             agiesprosrcdest()
             print("\n Completed configruation generation.... \n")
-            nextiteration()
-            end = 0   
+            #end = 0 
+            #nextiteration() 
     except: 
         end = 1
+        localend = 1
+    
 #parse junos command for filtername
 def parse():
-    with open(filename,"r") as file1:
-        n1 = file1.readlines();
-        global r1
-        for r1 in n1:
-            if filtername and comment in r1:
-                    inputs.append(r1)
-                    try:
-                        if "source-address" in r1:
-                            a = re.search(rf'\b(source-address)\b', r1)
-                            fi = a.end()+1; 
-                            l = len(r1)
-                            o = r1[fi:l]
-                            g = o.split(' ')
-                            global srcadd
-                            srcadd = g[0].strip()
-                            srcadds.append(srcadd)
-                            print(f"Found ipv4 source address: {srcadds}")
-                    except:
-                            end=1;
-                    try:
-                        if "destination-address" in r1:
-                            a = re.search(rf'\b(destination-address)\b', r1)
-                            fi = a.end()+1; 
-                            l = len(r1)
-                            o = r1[fi:l]
-                            g = o.split(' ')
-                            global destadd
-                            destadd = g[0].strip()
-                            destadds.append(destadd)
-                            print(f"Found ipv4 destination address: {destadds}")
-                    except:
-                            end=1;
-                    try:
-                        if "protocol" in r1:
-                            a = re.search(rf'\b(protocol)\b', r1)
-                            fi = a.end()+1; 
-                            l = len(r1)
-                            o = r1[fi:l]
-                            g = o.split(' ')
-                            global protocol
-                            protocol = g[0].strip()
-                            protocols.append(protocol)
-                            print(f"Found protocol: {protocol}")
-                    except:
-                            end=1;
-                    try:
-                        if "port" in r1:
-                            a = re.search(rf'\b(port)\b', r1)
-                            fi = a.end()+1; 
-                            l = len(r1)
-                            o = r1[fi:l]
-                            g = o.split(' ')
-                            global port
-                            port = g[0].strip()
-                            print(f"Found port: {port}")
-                    except Exception as e: 
-                            print(e)
-                    try:
-                        if "count" in r1:
-                            a = re.search(rf'\b(count)\b', r1)
-                            fi = a.end()+1; 
-                            l = len(r1)
-                            o = r1[fi:l]
-                            g = o.split(' ')
-                            global count
-                            count = g[0].strip()
-                            print(f"Found count: {count}")
-                    except Exception as e: 
-                            print(e)
-                    try:
-                        global deci
-                        if "accept" in r1:
-                            deci = "permit"
-                        elif "discard" in r1:
-                            deci = "deny"
-                        print(f"Found decision: {deci}")
-                    except:
-                            end=1;
-    print(f"\nComplete Input: \n{inputs}")
-    print("\nStarting conversion process...")
-    convert()     
-#parse junos command for filtername
-def getfiltername():
-    #find the group name
-    f = r.index("filter")
-    a = re.search(r'\b(filter)\b', r)
-    fi = a.end()+1;
-    l = len(r)
-    o = r[fi:l]
-    g = o.split(' ')
-    global filtername
-    filtername = g[0]
-    filternames.append(filtername)
-    print(f"Filtername: {filtername}")
     try:
-        a = re.search(r'\b(term)\b', r)
-        fi = a.end()+1; 
-        l = len(r)
-        o = r[fi:l]
-        g = o.split(' ')
-        global comment
-        comment = g[0].strip()
-        print(f"Term: {comment}")
-        parse()
+        global port 
+        port = 0
+        global srcadd
+        srcadd = 0
+        global protocol
+        protocol = 0
+        global destadd
+        destadd = 0
+        global srcadds
+        global destadds
+        global inputs
+        global value
+        global protocols
+        global count
+        count = 0
+        value = 0
+        inputs = []
+        srcadds = []
+        destadds = []
+        protocols = []
+        with open(filename,"r") as file1:
+            n1 = file1.readlines();
+            global r1
+            for r1 in n1:
+                if filtername and comment in r1:
+                        try:
+                            if "source-address" in r1:
+                                a = re.search(rf'\b(source-address)\b', r1)
+                                fi = a.end()+1; 
+                                l = len(r1)
+                                o = r1[fi:l]
+                                g = o.split(' ')
+                                srcadd = g[0].strip()
+                                srcadds.append(srcadd)
+                                print(f"Found ipv4 source address: {srcadds}")
+                        except:
+                                end=1;
+                        try:
+                            if "destination-address" in r1:
+                                a = re.search(rf'\b(destination-address)\b', r1)
+                                fi = a.end()+1; 
+                                l = len(r1)
+                                o = r1[fi:l]
+                                g = o.split(' ')
+                                destadd = g[0].strip()
+                                destadds.append(destadd)
+                                print(f"Found ipv4 destination address: {destadds}")
+                        except:
+                                end=1;
+                        try:
+                            if "protocol" in r1:
+                                a = re.search(rf'\b(protocol)\b', r1)
+                                fi = a.end()+1; 
+                                l = len(r1)
+                                o = r1[fi:l]
+                                g = o.split(' ')
+                                protocol = g[0].strip()
+                                protocols.append(protocol)
+                                print(f"Found protocol: {protocol}")
+                        except:
+                                end=1;
+                        try:
+                            if "port" in r1:
+                                a = re.search(rf'\b(port)\b', r1)
+                                fi = a.end()+1; 
+                                l = len(r1)
+                                o = r1[fi:l]
+                                g = o.split(' ')
+                                port = g[0].strip()
+                                print(f"Found port: {port}")
+                        except Exception as e: 
+                                print(e)
+                        try:
+                            if "count" in r1:
+                                a = re.search(rf'\b(count)\b', r1)
+                                fi = a.end()+1; 
+                                l = len(r1)
+                                o = r1[fi:l]
+                                g = o.split(' ')
+                                count = g[0].strip()
+                                print(f"Found count: {count}")
+                        except Exception as e: 
+                                print(e)
+                        try:
+                            global deci
+                            if "then" in r1:
+                                a = re.search(rf'\b(then)\b', r1)
+                                fi = a.end()+1; 
+                                l = len(r1)
+                                o = r1[fi:l]
+                                g = o.split(' ')
+                                decis = g[0].strip()
+                                if decis == "accept":
+                                    deci = "permit"
+                                    print(f"Found decision: {deci}")
+                                elif decis == "discard":
+                                    deci = "deny"
+                                    print(f"Found decision: {deci}")
+                        except:
+                                #print("No then")
+                                end=1;
+        print("\nStarting conversion process...")
+        #convert()
+    except Exception as ex:
+        trace = []
+        tb = ex.__traceback__
+        while tb is not None:
+            trace.append({
+                "filename": tb.tb_frame.f_code.co_filename,
+                "name": tb.tb_frame.f_code.co_name,
+                "lineno": tb.tb_lineno
+            })
+            tb = tb.tb_next
+        print(str({
+            'type': type(ex).__name__,
+            'message': str(ex),
+            'trace': trace
+        }))
+                    
+#parse junos command for filtername
+def getfilternames():
+    try:
+        filternames = []
+        with open(filename,"r") as file:
+            n = file.readlines();
+            for r in n:
+                if "filter" and "term" in r:
+                    f = r.index("filter")
+                    a = re.search(r'\b(filter)\b', r)
+                    fi = a.end()+1;
+                    l = len(r)
+                    o = r[fi:l]
+                    g = o.split(' ')
+                    filtername = g[0]
+                    a = re.search(r'\b(term)\b', r)
+                    fi = a.end()+1; 
+                    l = len(r)
+                    o = r[fi:l]
+                    g = o.split(' ')
+                    comment = g[0].strip()
+                    filternames.append(f"{filtername};{comment}")
+        global filterfinal
+        filterfinal = []
+        for filters in filternames:
+            if filters not in filterfinal:
+                filterfinal.append(filters)
     except Exception as ex:
         trace = []
         tb = ex.__traceback__
@@ -314,47 +316,49 @@ def getfiltername():
             'trace': trace
         }))
 
-#do the precheck
+#read the csv and do precheck
 def precheck():
-    if "set firewall" in r:
-        if "filter" in r:
-            getfiltername()
-    else:
-        end=1;
-
-#read the csv
-def readcsv():
-    with open(filename,"r") as file:
-        n = file.readlines();
-        global r
-        r = n[0]
-        precheck()
+    try:
+        open("eosaclconf.csv","w")
+        open("eosagiesconf.csv","w")
+        global filename
+        global end
+        print("Reading file 'junosconftest.csv' for inputs")
+        print("outputs in 'eosaclconf.csv' & 'eosagiesconf.csv'")
+        filename = "junosconftest.csv"
+        #filename = "junosconftest.csv"
+        with open(filename,"r") as file:
+            n = file.readlines();
+            r = n[0]
+            if "set firewall" in r:
+                if "filter" in r:
+                    end=1;
+            else:
+                end=0;
+    except:
+        print("Error: 'junosconftest.csv' must be in same folder or under '~/' in linux")
+        exit()
             
-#choose to read from csv or from manual command
-def choose():
-    global filename
-    filename = "junosconftest.csv"
-    readcsv();
-    
 def main():
-    global srcadds
-    global destadds
-    global inputs
-    global count
-    global value
-    global filternames
-    global protocols
-    count = 0
-    value = 0
-    inputs = []
-    srcadds = []
-    destadds = []
-    protocols = []
-    filternames = []
-    term = []
-    open("eosaclconf.csv","w")
-    open("eosagiesconf.csv","w")
-    choose()
+    #readcsv()
+    precheck()
+    #end= 1-continue ; 0-stop
+    if end == 1:
+        #get all filternames and terms
+        getfilternames()
+    else:
+        print("Does not looks like a junos command. Please check the input")
+        exit()
+    for filters in filterfinal:
+        sep = filters.split(';')
+        global filtername
+        global comment
+        filtername = sep[0]
+        comment = sep[1]
+        print(f"Found filtername:{filtername}")
+        print(f"Found Term:{comment}")
+        parse()
+        convert()
 
 if __name__=='__main__':
        main()
