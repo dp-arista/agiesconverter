@@ -336,11 +336,11 @@ def precheck():
             else:
                 end=0;
     except:
-        print("Error: 'junosconftest.csv' must be in same folder or under '~/' in linux")
+        print("Error: 'junosconftest.csv' must be in same folder or under '~/' if you run program from that location")
         exit()
             
 def main():
-    #readcsv()
+    #just call functions in sequence order
     precheck()
     #end= 1-continue ; 0-stop
     if end == 1:
