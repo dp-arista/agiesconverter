@@ -112,7 +112,7 @@ def agiesprosrcdest():
         for protoco in protocols:
             print(f"protocol {protoco}")
 #remember majority conditions goes first
-def convert():
+def aclconvert():
     end = 1
     localend = 1
     try:
@@ -122,6 +122,32 @@ def convert():
             aclinitial()
             aclprosrcdestport()
             aclcount()
+            print("\n Completed configruation generation.... \n")
+            localend = 0 
+            #nextiteration()
+    except:
+        end = 1
+        localend = 1
+    try:
+        if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0 and localend != 0:
+            print("\nGenerating ACL....")     
+            aclinitial()
+            aclprosrcdest()
+            aclcount()
+            print("\n Completed configruation generation.... \n")
+            #end = 0 
+            #nextiteration() 
+    except: 
+        end = 1
+        localend = 1
+
+#remember majority conditions goes first
+def agiesconvert():
+    end = 1
+    localend = 1
+    try:
+        #remember majority conditions goes first
+        if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating Agies Conf....")     
             agiesinitial()
             agiessource()
@@ -135,10 +161,6 @@ def convert():
         localend = 1
     try:
         if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating ACL....")     
-            aclinitial()
-            aclprosrcdest()
-            aclcount()
             print("\nGenerating Agies Conf....")     
             agiesinitial()
             agiessource()
@@ -150,7 +172,7 @@ def convert():
     except: 
         end = 1
         localend = 1
-    
+
 #parse junos command for filtername
 def parse():
     try:
@@ -253,10 +275,31 @@ def parse():
                                     deci = "deny"
                                     print(f"Found decision: {deci}")
                         except:
-                                #print("No then")
                                 end=1;
-        print("\nStarting conversion process...")
-        #convert()
+                        try:
+                            global srcprelist
+                            if "source-prefix-list" in r1:
+                                a = re.search(rf'\b(source-prefix-list)\b', r1)
+                                fi = a.end()+1; 
+                                l = len(r1)
+                                o = r1[fi:l]
+                                g = o.split(' ')
+                                srcprelist = g[0].strip()
+                                print(f"Found source-prefix-list: {srcprelist}")
+                        except:
+                                end=1;
+                        try:
+                            global destprelist
+                            if "destination-prefix-list" in r1:
+                                a = re.search(rf'\b(destination-prefix-list)\b', r1)
+                                fi = a.end()+1; 
+                                l = len(r1)
+                                o = r1[fi:l]
+                                g = o.split(' ')
+                                destprelist = g[0].strip()
+                                print(f"Found destination-prefix-list: {destprelist}")
+                        except:
+                                end=1;
     except Exception as ex:
         trace = []
         tb = ex.__traceback__
@@ -325,7 +368,7 @@ def precheck():
         global end
         print("Reading file 'junosconftest.csv' for inputs")
         print("outputs in 'eosaclconf.csv' & 'eosagiesconf.csv'")
-        filename = "junosconftest.csv"
+        filename = "/Users/dp/Desktop/dp/testagiescoverter/junosconftest.csv"
         #filename = "junosconftest.csv"
         with open(filename,"r") as file:
             n = file.readlines();
@@ -338,9 +381,19 @@ def precheck():
     except:
         print("Error: 'junosconftest.csv' must be in same folder or under '~/' if you run program from that location")
         exit()
-            
+
+def choice():
+    global choose
+    choose = input("Output needed is agies or acl[agies/acl]:")
+    choose = choose.strip()
+    #print(choose)
+    if choose != "agies" and choose != "acl":
+        print("Please type only agies or acl")
+        choice()
+
 def main():
     #just call functions in sequence order
+    choice()
     precheck()
     #end= 1-continue ; 0-stop
     if end == 1:
@@ -358,7 +411,12 @@ def main():
         print(f"Found filtername:{filtername}")
         print(f"Found Term:{comment}")
         parse()
-        convert()
+        if choose == "agies":
+            print("Agies Conversion started...")
+            agiesconvert()
+        elif choose == "acl":
+            print("ACL Conversion started....")
+            aclconvert()
 
 if __name__=='__main__':
        main()
