@@ -368,7 +368,7 @@ def precheck():
         global end
         print("Reading file 'junosconftest.csv' for inputs")
         print("outputs in 'eosaclconf.csv' & 'eosagiesconf.csv'")
-        filename = "/Users/dp/Desktop/dp/agiesconverter/junosconftest.csv"
+        filename = "junosconftest.csv"
         #filename = "junosconftest.csv"
         with open(filename,"r") as file:
             n = file.readlines();
