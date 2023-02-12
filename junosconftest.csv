@@ -1,0 +1,27 @@
+set firewall family inet filter Test1 term 10 from source-address 14.33.69.224/29
+set firewall family inet filter Test1 term 10 from source-address 14.33.69.232/29
+set firewall family inet filter Test1 term 10 from destination-address 14.33.69.232/29
+set firewall family inet filter Test1 term 10 from destination-address 14.33.69.224/29
+set firewall family inet filter Test1 term 10 from protocol tcp
+set firewall family inet filter Test1 term 10 from port bgp
+set firewall family inet filter Test1 term 10 then count term10
+set firewall family inet filter Test1 term 10 then accept
+set firewall family inet filter Test2 term 20 from source-address 40.33.69.22/29
+set firewall family inet filter Test2 term 20 from source-address 40.33.69.23/29
+set firewall family inet filter Test2 term 20 from destination-address 40.33.69.23/29
+set firewall family inet filter Test2 term 20 from destination-address 40.33.69.22/29
+set firewall family inet filter Test2 term 20 from protocol udp
+set firewall family inet filter Test2 term 20 from port dns
+set firewall family inet filter Test2 term 20 then count term20
+set firewall family inet filter Test2 term 20 then discard
+set firewall family inet filter Test3 term 40 from source-address 42.33.69.224/29
+set firewall family inet filter Test3 term 40 from source-address 42.33.69.232/29
+set firewall family inet filter Test3 term 40 from source-address 42.33.97.141/32
+set firewall family inet filter Test3 term 40 from source-address 42.33.97.143/32
+set firewall family inet filter Test3 term 40 from source-address 42.33.97.173/32
+set firewall family inet filter Test3 term 40 from source-address 42.33.97.175/32
+set firewall family inet filter Test3 term 40 from destination-address 42.33.69.232/29
+set firewall family inet filter Test3 term 40 from destination-address 42.33.69.224/29
+set firewall family inet filter Test3 term 40 from protocol icmp
+set firewall family inet filter Test3 term 40 then count term40
+set firewall family inet filter Test3 term 40 then accept

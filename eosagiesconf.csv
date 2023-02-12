@@ -1,0 +1,48 @@
+
+
+traffic-policies
+field-set ipv4 prefix Test1-source
+14.33.69.224/29
+14.33.69.232/29
+field-set ipv4 prefix Test1-destination
+14.33.69.232/29
+14.33.69.224/29
+traffic-policy 10
+match 10 ipv4
+source prefix field-set Test1-source
+destination prefix field-set Test1-destination
+protocol tcp destination port bgp
+
+traffic-policies
+field-set ipv4 prefix Test2-source
+40.33.69.22/29
+40.33.69.23/29
+field-set ipv4 prefix Test2-destination
+40.33.69.23/29
+40.33.69.22/29
+traffic-policy 20
+match 20 ipv4
+source prefix field-set Test2-source
+destination prefix field-set Test2-destination
+protocol udp destination port dns
+
+traffic-policies
+field-set ipv4 prefix Test3-source
+40.33.69.22/29
+40.33.69.23/29
+42.33.69.224/29
+42.33.69.232/29
+42.33.97.141/32
+42.33.97.143/32
+42.33.97.173/32
+42.33.97.175/32
+field-set ipv4 prefix Test3-destination
+40.33.69.23/29
+40.33.69.22/29
+42.33.69.232/29
+42.33.69.224/29
+traffic-policy 40
+match 40 ipv4
+source prefix field-set Test3-source
+destination prefix field-set Test3-destination
+protocol icmp
