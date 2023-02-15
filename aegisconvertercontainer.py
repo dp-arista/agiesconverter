@@ -55,6 +55,8 @@ def aegisinitial():
     with open("eosaegisconf.csv","a") as eos:
         eos.write("\n\ntraffic-policies\n")
         print("traffic-policies")
+        eos.write(f"\ntraffic-policy {filtername}\n")
+        print(f"\ntraffic-policy {filtername}\n")
 
 def aegissource():
     with open("eosaegisconf.csv","a") as eos:
@@ -136,7 +138,6 @@ def aegisfinal():
 
 def aegisproto():
     with open("eosaegisconf.csv","a") as eos:
-        eos.write(f"\ntraffic-policy {filtername}\n")
         eos.write(f"match {comment} ipv4\n")
         eos.write(f"!!match {comment} ipv4 or ipv6")
         print(f"traffic-policy {filtername}")
@@ -162,7 +163,7 @@ def aclconvert():
     end = 1
     localend = 1
     try:
-        if srcprelist != 0 or destprelist !=0 and count != 0 and deci != 0 and localend != 0:
+        if (srcprelist != 0 or destprelist !=0) and count != 0 and deci != 0 and localend != 0:
             print("\nNot Generating ACL Conf....")     
     except:
         end = 1
@@ -197,7 +198,7 @@ def aegisconvert():
     localend = 1
     #remember majority conditions goes first. Ex: if srcadd != 0 - only one condition means it will be in the last
     try:
-        if destprelist != 0 and srcport != 0 or destiport != 0 and protocol != 0 and count != 0 and deci != 0 and localend != 0:
+        if destprelist != 0 and (srcport != 0 or destiport != 0) and protocol != 0 and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating aegis Conf....")     
             aegisinitial()
             aegissrcdestprelist()
@@ -207,9 +208,8 @@ def aegisconvert():
             localend = 0 
     except:
         end = 1
-        localend = 1
     try:
-        if srcprelist != 0 or destprelist != 0 and count != 0 and deci != 0 and localend != 0:
+        if (srcprelist != 0 or destprelist != 0) and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating aegis Conf....")     
             aegisinitial()
             aegissrcdestprelist()
@@ -218,7 +218,6 @@ def aegisconvert():
             localend = 0 
     except:
         end = 1
-        localend = 1
     try:
         if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating aegis Conf....")     
@@ -231,7 +230,6 @@ def aegisconvert():
             localend = 0       
     except:
         end = 1
-        localend = 1
     try:
         if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating aegis Conf....")     
@@ -243,9 +241,8 @@ def aegisconvert():
             print("\n Completed configruation generation.... \n")
     except: 
         end = 1
-        localend = 1
     try:
-        if srcport != 0 or destiport != 0 and protocol != 0 and count != 0 and deci != 0 and localend != 0:
+        if (srcport != 0 or destiport != 0) and protocol != 0 and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating aegis Conf....")     
             aegisinitial()
             aegisproto()
@@ -254,7 +251,6 @@ def aegisconvert():
             localend = 0 
     except:
         end = 1
-        localend = 1
     try:
         if protocol != 0 and count != 0 and deci != 0 and localend != 0:
             print("\nGenerating aegis Conf....")     
@@ -265,7 +261,6 @@ def aegisconvert():
             localend = 0 
     except:
         end = 1
-        localend = 1
 
 #parse junos command for filtername
 def parse():
