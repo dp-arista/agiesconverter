@@ -51,6 +51,102 @@ def aclcount():
         eos.write("\ncounter per-entry")
         print("counter per-entry")
 
+def aegisaction():
+    try:
+        with open("eosaegisconf.csv","a") as eos:
+            eos.write("actions\n")
+            print("actions")
+            if count != 0:
+                eos.write("count\n")
+                print("count")
+            if deci == "deny":
+                eos.write("drop\n")
+                print("drop")
+            eos.write("\n")
+    except:
+        end = 1
+
+def aegisprotocol():
+    with open("eosaegisconf.csv","a") as eos:
+        try:
+            if srcport != 0 and destiport != 0:
+                eos.write(f"protocol tcp source port {srcport} destination port {destiport}\n")
+                eos.write(f"protocol udp source port {srcport} destination port {destiport}\n")
+                print(f"protocol tcp source port {srcport} destination port {destiport}")
+                print(f"protocol udp source port {srcport} destination port {destiport}")
+        except:
+            end = 1
+        try:        
+            if destiport != 0 and srcport == 0:
+                eos.write(f"protocol tcp destination port {destiport}\n")
+                eos.write(f"protocol udp destination port {destiport}\n")
+                print(f"protocol tcp destination port {destiport}")
+                print(f"protocol udp destination port {destiport}")
+        except:
+            end = 1
+        try:        
+            if destiport == 0 and srcport != 0:
+                eos.write(f"protocol tcp source port {srcport}\n")
+                eos.write(f"protocol udp source port {srcport}\n")
+                print(f"protocol tcp source port {srcport}")
+                print(f"protocol udp source port {srcport}")
+        except:
+            end = 1
+        try:
+            if protocol != 0 and port != 0:
+                rowcount  = 0
+                destrow = 0
+                for row in open(filename):
+                    #print(row)
+                    if (filtername in row) and (comment in row) and ("port" in row):
+                        portrow=rowcount    
+                    rowcount+= 1
+                #print(portrow)
+                rowcount  = 0
+                for row in open(filename):
+                    if (filtername in row) and (comment in row) and ("destination" or "source" in row):
+                        destrow=rowcount 
+                    rowcount+= 1
+                #print(destrow) 
+                if portrow > destrow:
+                    for protoco in protocols:
+                        eos.write(f"protocol {protoco} source port {port}\n")
+                        print(f"protocol {protoco} source port {port}")   
+                else:
+                    for protoco in protocols:
+                        eos.write(f"protocol {protoco} destination port {port}\n")
+                        print(f"protocol {protoco} destination port {port}")                
+        except:
+            end = 1            
+
+
+def aegisprefix():
+    with open("eosaegisconf.csv","a") as eos:
+        try:
+            if srcprelist != 0:
+                eos.write(f"source prefix field-set {srcprelist}\n")
+                print(f"source prefix field-set {srcprelist}")
+        except:
+            end = 1
+        try:
+            if destprelist != 0:
+                eos.write(f"destination prefix field-set {destprelist}\n")
+                print(f"destination prefix field-set {destprelist}")
+        except:
+            end = 1;
+        try:
+            if srcadd != 0:
+                eos.write(f"source prefix field-set {filtername}-source\n")
+                print(f"source prefix field-set {filtername}-source")
+        except:
+            end = 1
+        try:
+            if destadd != 0:
+                eos.write(f"destination prefix field-set {filtername}-destination\n")
+                print(f"destination prefix field-set {filtername}-destination")
+        except:
+            end = 1
+
 def aegistrafficpolicy():
     with open("eosaegisconf.csv","a") as eos:
         eos.write("traffic-policies\n")
@@ -108,14 +204,14 @@ def aegisfieldset():
             eos.write(f"field-set ipv4 prefix {filtername}-source\n")
             print(f"field-set ipv4 prefix {filtername}-source")
             for srcad in srcadds:
-                eos.write(f"\n{srcad}")
+                eos.write(f"{srcad}\n")
                 print(f"{srcad}")
     if destadd != 0:
         with open("eosaegisconf.csv","a") as eos:
             eos.write(f"field-set ipv4 prefix {filtername}-destination\n")
             print(f"field-set ipv4 prefix {filtername}-destination")              
             for destad in destadds:
-                eos.write(f"\n{destad}")
+                eos.write(f"{destad}\n")
                 print(f"{destad}")  
     if destprelist != 0:
         destas = []
@@ -165,65 +261,6 @@ def aegisfieldset():
             for src in srcas:
                 eos.write(f"\n{src}")
                 print(f"{src}")  
-       
-def aegisprosrcdestport():
-    with open("eosaegisconf.csv","a") as eos:
-        eos.write(f"source prefix field-set {filtername}-source\n")
-        eos.write(f"destination prefix field-set {filtername}-destination\n")
-        for protoco in protocols:
-            eos.write(f"protocol {protoco} destination port {port}")
-        print(f"source prefix field-set {filtername}-source")
-        print(f"destination prefix field-set {filtername}-destination")
-        for protoco in protocols:
-            print(f"protocol {protoco} destination port {port}")
-
-def aegisprosrcdest():
-    with open("eosaegisconf.csv","a") as eos:
-        eos.write(f"source prefix field-set {filtername}-source\n")
-        eos.write(f"destination prefix field-set {filtername}-destination\n")
-        for protoco in protocols:
-            eos.write(f"protocol {protoco}")
-        print(f"source prefix field-set {filtername}-source")
-        print(f"destination prefix field-set {filtername}-destination")
-        for protoco in protocols:
-            print(f"protocol {protoco}")
-
-def aegissrcdestprelist():
-    with open("eosaegisconf.csv","a") as eos:
-        if srcprelist != 0:
-            eos.write(f"source prefix field-set {srcprelist}\n")
-            print(f"source prefix field-set {srcprelist}")
-        elif destprelist != 0:
-            eos.write(f"destination prefix field-set {destprelist}\n")
-            print(f"destination prefix field-set {destprelist}")
-            
-def aegisfinal():
-    with open("eosaegisconf.csv","a") as eos:
-        eos.write("actions\n")
-        print("actions")
-        if count != 0:
-            eos.write("count\n")
-            print("count")
-        if deci == "deny":
-            eos.write("drop\n")
-            print("drop")
-
-def aegisproto():
-    with open("eosaegisconf.csv","a") as eos:
-        if srcport != 0 and destiport != 0:
-            eos.write(f"protocol tcp source port {srcport} destination port {destiport}\n")
-            eos.write(f"protocol udp source port {srcport} destination port {destiport}\n")
-            print(f"protocol tcp source port {srcport} destination port {destiport}")
-            print(f"protocol udp source port {srcport} destination port {destiport}")
-        elif destiport != 0:
-            eos.write(f"protocol tcp destination port {destiport}\n")
-            eos.write(f"protocol udp destination port {destiport}\n")
-            print(f"protocol tcp destination port {destiport}")
-            print(f"protocol udp destination port {destiport}")
-        elif protocol != 0:
-            for protoco in protocols:
-                eos.write(f"protocol {protoco}\n")
-                print(f"protocol {protoco}")
 
 #remember majority conditions goes first
 def aclconvert():
@@ -242,7 +279,7 @@ def aclconvert():
             aclinitial()
             aclprosrcdestport()
             aclcount()
-            print("\n Completed configruation generation.... \n")
+            print("\n Completed configuration generation.... \n")
             localend = 0   
     except:
         end = 1
@@ -252,82 +289,11 @@ def aclconvert():
             aclinitial()
             aclprosrcdest()
             aclcount()
-            print("\n Completed configruation generation.... \n")
+            print("\n Completed configuration generation.... \n")
             #end = 0 
     except: 
         end = 1
 
-#remember majority conditions goes first
-def aegisconvert():
-    end = 1
-    localend = 1
-    #remember majority conditions goes first. Ex: if srcadd != 0 - only one condition means it will be in the last
-    try:
-        if destprelist != 0 and (srcport != 0 or destiport != 0) and protocol != 0 and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating aegis Conf....")   
-            aegisfieldset()  
-            aegistrafficpolicy()
-            aegissrcdestprelist()
-            aegisproto()
-            aegisfinal()
-            print("\n Completed configruation generation.... \n")
-            localend = 0 
-    except:
-        end = 1
-    try:
-        if (srcprelist != 0 or destprelist != 0) and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating aegis Conf....")     
-            aegisfieldset()
-            aegistrafficpolicy()
-            aegissrcdestprelist()
-            aegisfinal()
-            print("\n Completed configruation generation.... \n")
-            localend = 0 
-    except:
-        end = 1
-    try:
-        if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating aegis Conf....")
-            aegisfieldset()    
-            aegistrafficpolicy()
-            aegisprosrcdestport()
-            aegisfinal()
-            print("\n Completed configruation generation.... \n")
-            localend = 0       
-    except:
-        end = 1
-    try:
-        if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating aegis Conf....")
-            aegisfieldset()    
-            aegistrafficpolicy()
-            aegisprosrcdest()
-            aegisfinal()
-            print("\n Completed configruation generation.... \n")
-    except: 
-        end = 1
-    try:
-        if (srcport != 0 or destiport != 0) and protocol != 0 and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating aegis Conf....")
-            aegisfieldset()     
-            aegistrafficpolicy()
-            aegisproto()
-            aegisfinal()
-            print("\n Completed configruation generation.... \n")
-            localend = 0 
-    except:
-        end = 1
-    try:
-        if protocol != 0 and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating aegis Conf....")
-            aegisfieldset()    
-            aegistrafficpolicy()
-            aegisproto()
-            aegisfinal()
-            print("\n Completed configruation generation.... \n")
-            localend = 0 
-    except:
-        end = 1
 
 #parse junos command for filtername
 def parse():
@@ -400,7 +366,7 @@ def parse():
                                 g = o.split(' ')
                                 protocol = g[0].strip()
                                 protocols.append(protocol)
-                                print(f"Found protocol: {protocol}")
+                                print(f"Found protocol: {protocols}")
                         except:
                                 end=1;
                         try:
@@ -597,8 +563,14 @@ def main():
         print(f"Found Term:{comment}")
         parse()
         if choose == "aegis":
-            print("aegis Conversion started...")
-            aegisconvert()
+            print("\nAegis Conversion started...")
+            print("Generating aegis Conf....")   
+            aegisfieldset()  
+            aegistrafficpolicy()
+            aegisprefix()
+            aegisprotocol()
+            aegisaction()
+            print("\n Completed configuration generation....")
         elif choose == "acl":
             print("ACL Conversion started....")
             aclconvert()
