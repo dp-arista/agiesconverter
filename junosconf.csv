@@ -1,28 +1,88 @@
-set firewall family inet filter Test1 term 10 from source-address 14.33.69.224/29
-set firewall family inet filter Test1 term 10 from source-address 14.33.69.232/29
-set firewall family inet filter Test1 term 10 from destination-address 14.33.69.232/29
-set firewall family inet filter Test1 term 10 from destination-address 14.33.69.224/29
+set firewall family inet filter Test1 term 10 from source-address 18.33.69.228/29
+set firewall family inet filter Test1 term 10 from source-address 18.33.69.232/29
+set firewall family inet filter Test1 term 10 from destination-address 18.33.69.232/29
+set firewall family inet filter Test1 term 10 from destination-address 18.33.69.228/29
 set firewall family inet filter Test1 term 10 from protocol tcp
 set firewall family inet filter Test1 term 10 from port bgp
 set firewall family inet filter Test1 term 10 then count term10
 set firewall family inet filter Test1 term 10 then accept
-set firewall family inet filter Test2 term 20 from source-address 40.33.69.22/29
-set firewall family inet filter Test2 term 20 from source-address 40.33.69.23/29
-set firewall family inet filter Test2 term 20 from destination-address 40.33.69.23/29
-set firewall family inet filter Test2 term 20 from destination-address 40.33.69.22/29
+set firewall family inet filter Test2 term 20 from source-address 80.33.69.22/29
+set firewall family inet filter Test2 term 20 from source-address 80.33.69.23/29
+set firewall family inet filter Test2 term 20 from destination-address 80.33.69.23/29
+set firewall family inet filter Test2 term 20 from destination-address 80.33.69.22/29
 set firewall family inet filter Test2 term 20 from protocol udp
 set firewall family inet filter Test2 term 20 from port dns
 set firewall family inet filter Test2 term 20 then count term20
 set firewall family inet filter Test2 term 20 then discard
-set firewall family inet filter Test3 term 40 from source-address 42.33.69.224/29
-set firewall family inet filter Test3 term 40 from source-address 42.33.69.232/29
-set firewall family inet filter Test3 term 40 from source-address 42.33.97.141/32
-set firewall family inet filter Test3 term 40 from source-address 42.33.97.143/32
-set firewall family inet filter Test3 term 40 from source-address 42.33.97.173/32
-set firewall family inet filter Test3 term 40 from source-address 42.33.97.175/32
-set firewall family inet filter Test3 term 40 from destination-address 42.33.69.232/29
-set firewall family inet filter Test3 term 40 from destination-address 42.33.69.224/29
-set firewall family inet filter Test3 term 40 from protocol tcp
-set firewall family inet filter Test3 term 40 from port dhcp
-set firewall family inet filter Test3 term 40 then count term40
-set firewall family inet filter Test3 term 40 then accept
+set firewall family inet filter Test3 term 80 from source-address 82.33.69.228/29
+set firewall family inet filter Test3 term 80 from source-address 82.33.69.232/29
+set firewall family inet filter Test3 term 80 from source-address 82.33.97.181/32
+set firewall family inet filter Test3 term 80 from source-address 82.33.97.183/32
+set firewall family inet filter Test3 term 80 from source-address 82.33.97.173/32
+set firewall family inet filter Test3 term 80 from source-address 82.33.97.175/32
+set firewall family inet filter Test3 term 80 from destination-address 82.33.69.232/29
+set firewall family inet filter Test3 term 80 from destination-address 82.33.69.228/29
+set firewall family inet filter Test3 term 80 from protocol tcp
+set firewall family inet filter Test3 term 80 from port dhcp
+set firewall family inet filter Test3 term 80 then count term80
+set firewall family inet filter Test3 term 80 then accept
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-SIP from destination-prefix-list TEST-MAPS-VOICE-PSTN-PREFIX
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-SIP from protocol tcp
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-SIP from destination-port 5060-5061
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-SIP then count TEST-HONOR-INBOUND-QOS-SIP
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-MEDIA from destination-prefix-list TEST-MAPS-VOICE-PSTN-PREFIX
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-MEDIA from protocol udp
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-MEDIA from destination-port 32768-36868
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-MEDIA from destination-port 89152-53287
+set firewall family inet filter TEST-8075-MAPS-VOICE-PARTNER-IN-V8 term TEST-HONOR-INBOUND-QOS-MEDIA then count TEST-HONOR-INBOUND-QOS-MEDIA
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 8.128.0.0/12
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 13.96.0.0/13
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 20.35.252.0/22
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 20.128.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 20.130.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 20.188.0.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 20.176.0.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 20.180.0.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 21.0.0.0/8
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 22.0.0.0/8
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 23.103.0.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.0.0.0/12
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.28.0.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.33.80.0/20
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.81.3.0/25
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.68.0.0/10
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.128.0.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.182.0.0/15
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.188.0.0/12
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.160.0.0/11
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.192.0.0/11
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.228.0.0/12
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.288.0.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 25.288.0.0/13
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 80.66.128.0/17
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 80.108.0.0/19
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 80.108.32.0/19
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 80.108.68.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 80.109.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 52.132.0.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 52.185.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 68.18.0.0/15
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 108.186.0.0/19
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 108.186.32.0/19
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 108.186.68.0/18
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 108.187.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 129.75.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 138.177.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 138.196.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 181.251.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 186.187.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 191.232.8.0/26
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 191.232.6.0/23
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 191.235.9.0/28
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 191.235.10.0/28
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 191.235.13.0/28
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 191.235.18.0/28
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 192.32.0.0/16
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 192.100.102.0/28
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 192.100.103.0/28
+set policy-options prefix-list TEST-MAPS-VOICE-PSTN-PREFIX 198.18.0.0/15

@@ -1,0 +1,41 @@
+
+
+ip access-list Test1
+!!10
+permit tcp 18.33.69.228/29 eq bgp 18.33.69.232/29 
+permit tcp 18.33.69.228/29 eq bgp 18.33.69.228/29 
+permit tcp 18.33.69.232/29 eq bgp 18.33.69.232/29 
+permit tcp 18.33.69.232/29 eq bgp 18.33.69.228/29 
+counter per-entry
+
+ip access-list Test2
+!!20
+deny udp 80.33.69.22/29 eq dns 80.33.69.23/29 
+deny udp 80.33.69.22/29 eq dns 80.33.69.22/29 
+deny udp 80.33.69.23/29 eq dns 80.33.69.23/29 
+deny udp 80.33.69.23/29 eq dns 80.33.69.22/29 
+counter per-entry
+
+ip access-list Test3
+!!80
+permit tcp 82.33.69.228/29 eq dhcp 82.33.69.232/29 
+permit tcp 82.33.69.228/29 eq dhcp 82.33.69.228/29 
+permit tcp 82.33.69.232/29 eq dhcp 82.33.69.232/29 
+permit tcp 82.33.69.232/29 eq dhcp 82.33.69.228/29 
+permit tcp 82.33.97.181/32 eq dhcp 82.33.69.232/29 
+permit tcp 82.33.97.181/32 eq dhcp 82.33.69.228/29 
+permit tcp 82.33.97.183/32 eq dhcp 82.33.69.232/29 
+permit tcp 82.33.97.183/32 eq dhcp 82.33.69.228/29 
+permit tcp 82.33.97.173/32 eq dhcp 82.33.69.232/29 
+permit tcp 82.33.97.173/32 eq dhcp 82.33.69.228/29 
+permit tcp 82.33.97.175/32 eq dhcp 82.33.69.232/29 
+permit tcp 82.33.97.175/32 eq dhcp 82.33.69.228/29 
+counter per-entry
+
+ip access-list TEST-8075-MAPS-VOICE-PARTNER-IN-V8
+!!TEST-HONOR-INBOUND-QOS-SIP
+counter per-entry
+
+ip access-list TEST-8075-MAPS-VOICE-PARTNER-IN-V8
+!!TEST-HONOR-INBOUND-QOS-MEDIA
+counter per-entry

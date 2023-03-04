@@ -525,7 +525,7 @@ def precheck():
     global end
     print("outputs in 'eosaclconf.csv' & 'eosaegisconf.csv'")
     #this if is for temporary until we complete aegis and acl program complete parallely
-    filename = "junosconftest.csv"
+    filename = "junosconf.csv"
     print(f"Reading file {filename} for inputs")
     try:
         open(filename,"r")
