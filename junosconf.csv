@@ -22,6 +22,7 @@ set firewall family inet filter Test3 term 40 from source-address 42.33.97.173/3
 set firewall family inet filter Test3 term 40 from source-address 42.33.97.175/32
 set firewall family inet filter Test3 term 40 from destination-address 42.33.69.232/29
 set firewall family inet filter Test3 term 40 from destination-address 42.33.69.224/29
-set firewall family inet filter Test3 term 40 from protocol icmp
+set firewall family inet filter Test3 term 40 from protocol tcp
+set firewall family inet filter Test3 term 40 from port dhcp
 set firewall family inet filter Test3 term 40 then count term40
 set firewall family inet filter Test3 term 40 then accept

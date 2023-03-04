@@ -2,54 +2,56 @@
 #SHEBANG
 import re
 #read this prgram from bottom to top for understanding
+import csv
+import time
 
-def aclinitial():
+def aclcount():
+    if count != 0:
+        with open("eosaclconf.csv","a") as eos:
+            eos.write("\ncounter per-entry")
+            print("counter per-entry")
+
+def aclcondition():
+    with open("eosaclconf.csv","a") as eos:
+        rowcount  = 0
+        if (srcadd != 0) and (destadd != 0):
+            for srcad in srcadds:
+                for destad in destadds:
+                    eos.write(f"\n")
+                    #Setting initial value of the counter to zero
+                    rowcount  = 0
+                    #iterating through the whole file
+                    for row in open(filename):
+                        #print(row)
+                        if "port" in row:
+                            portrow=rowcount
+                        rowcount+= 1
+                    rowcount  = 0
+                    for row in open(filename):
+                        if "destination" in row:
+                            destrow=rowcount  
+                        rowcount+= 1
+                    if protocol != 0:
+                        if portrow > destrow:
+                            eos.write(f"{deci} {protocol} {srcad} {destad} eq {port}")
+                            print(f"{deci} {protocol} {srcad} {destad} eq {port}")
+                        else:
+                            eos.write(f"{deci} {protocol} {srcad} eq {port} {destad} ")
+                            print(f"{deci} {protocol} {srcad} eq {port} {destad} ")
+
+def aclname():
     with open("eosaclconf.csv","a") as eos:
         eos.write(f"\n\nip access-list {filtername}")
         eos.write(f"\n!!{comment}")
         print(f"ip access-list {filtername}")
         print(f"!!{comment}")
 
-def aclprosrcdestport():
-    with open("eosaclconf.csv","a") as eos:
-        rowcount  = 0
-        for srcad in srcadds:
-            for destad in destadds:
-                eos.write(f"\n")
-                #Setting initial value of the counter to zero
-                rowcount  = 0
-                #iterating through the whole file
-                for row in open(filename):
-                    #print(row)
-                    if "port" in row:
-                        portrow=rowcount
-                    rowcount+= 1
-                #print(portrow)
-                rowcount  = 0
-                for row in open(filename):
-                    if "destination" in row:
-                        destrow=rowcount  
-                    rowcount+= 1
-                #print(destrow) 
-                if portrow > destrow:
-                    eos.write(f"{deci} {protocol} {srcad} {destad} eq {port}")
-                    print(f"{deci} {protocol} {srcad} {destad} eq {port}")
-                else:
-                    eos.write(f"{deci} {protocol} {srcad} eq {port} {destad} ")
-                    print(f"{deci} {protocol} {srcad} eq {port} {destad} ")               
-
-def aclprosrcdest():
-    with open("eosaclconf.csv","a") as eos:
-        for srcad in srcadds:
-            for destad in destadds:
-                eos.write(f"\n")
-                eos.write(f"{deci} {protocol} {srcad} {destad}")
-                print(f"{deci} {protocol} {srcad} {destad}")
-
-def aclcount():
-    with open("eosaclconf.csv","a") as eos:
-        eos.write("\ncounter per-entry")
-        print("counter per-entry")
+def aclconvert():
+    print("\n ACL Conversion started....")
+    aclname()
+    aclcondition()
+    aclcount()
+    print("\n Completed configuration generation....")
 
 def aegisaction():
     try:
@@ -262,39 +264,6 @@ def aegisfieldset():
                 eos.write(f"\n{src}")
                 print(f"{src}")  
 
-#remember majority conditions goes first
-def aclconvert():
-    end = 1
-    localend = 1
-    try:
-        if (srcprelist != 0 or destprelist !=0) and count != 0 and deci != 0 and localend != 0:
-            print("\nNot Generating ACL Conf....")
-            localend = 0     
-    except:
-        end = 1
-    try:
-        #remember majority conditions goes first
-        if srcadd != 0 and destadd != 0 and protocol != 0 and port != 0 and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating ACL....")     
-            aclinitial()
-            aclprosrcdestport()
-            aclcount()
-            print("\n Completed configuration generation.... \n")
-            localend = 0   
-    except:
-        end = 1
-    try:
-        if srcadd != 0 and destadd != 0 and protocol != 0 and count != 0 and deci != 0 and localend != 0:
-            print("\nGenerating ACL....")     
-            aclinitial()
-            aclprosrcdest()
-            aclcount()
-            print("\n Completed configuration generation.... \n")
-            #end = 0 
-    except: 
-        end = 1
-
-
 #parse junos command for filtername
 def parse():
     try:
@@ -328,11 +297,16 @@ def parse():
         srcadds = []
         destadds = []
         protocols = []
+        global completeinput
+        completeinput = []
         with open(filename,"r") as file1:
             n1 = file1.readlines();
             global r1
             for r1 in n1:
-                if filtername and comment in r1:
+                filternamecheck = f"{filtername} "
+                commentcheck = f"{comment} "
+                if (filternamecheck in r1) and (commentcheck in r1):
+                        completeinput.append(r1)
                         try:
                             if "source-address" in r1:
                                 a = re.search(rf'\b(source-address)\b', r1)
@@ -466,23 +440,55 @@ def parse():
             'message': str(ex),
             'trace': trace
         }))
-                    
+
+def aegisconvert():
+    print("\n Aegis Conversion started...")
+    print("Generating aegis Conf....")   
+    aegisfieldset()  
+    aegistrafficpolicy()
+    aegisprefix()
+    aegisprotocol()
+    aegisaction()
+    print("\n Completed configuration generation....")
+
+def convert():
+    for filters in filterfinal:
+        sep = filters.split(';')
+        global filtername
+        global comment
+        filtername = sep[0]
+        comment = sep[1]
+        print(f"\nFound filtername:{filtername}")
+        print(f"Found Term:{comment}")
+        parse()
+        print("\nComplete Input:")
+        for inputs in completeinput:
+            print(inputs.strip())
+        if choose == "aegis":
+            aegisconvert()
+            #time.sleep is added for slow output generation so that user can read the output easily
+            time.sleep(2)
+        #ACL is not fully completed need to work on function arrangements
+        elif choose == "acl":
+            aclconvert()
+            time.sleep(2)
+
 #parse junos command for filtername
 def getfilternames():
     try:
         filternames = []
         with open(filename,"r") as file:
-            n = file.readlines();
-            for r in n:
-                if "filter" and "term" in r:
-                    f = r.index("filter")
-                    a = re.search(r'\b(filter)\b', r)
+            csvreader = csv.reader(file)
+            for row in csvreader:
+                if (" filter" in row[0]) and (" term" in row[0]):
+                    r = row[0]
+                    a = re.search(r'\b( filter)\b', r)
                     fi = a.end()+1;
                     l = len(r)
                     o = r[fi:l]
                     g = o.split(' ')
                     filtername = g[0]
-                    a = re.search(r'\b(term)\b', r)
+                    a = re.search(r'\b( term)\b', r)
                     fi = a.end()+1; 
                     l = len(r)
                     o = r[fi:l]
@@ -512,68 +518,53 @@ def getfilternames():
 
 #read the csv and do precheck
 def precheck():
+    open("eosaclconf.csv","w")
+    open("eosaegisconf.csv","w")
+    global filename
+    #end= 1-continue ; 0-stop
+    global end
+    print("outputs in 'eosaclconf.csv' & 'eosaegisconf.csv'")
+    #this if is for temporary until we complete aegis and acl program complete parallely
+    filename = "junosconftest.csv"
+    print(f"Reading file {filename} for inputs")
     try:
-        open("eosaclconf.csv","w")
-        open("eosaegisconf.csv","w")
-        global filename
-        global end
-        print("Reading file 'junosconftest.csv' for inputs")
-        print("outputs in 'eosaclconf.csv' & 'eosaegisconf.csv'")
-        filename = "junosconftest.csv"
-        #filename = "junosconftest.csv"
-        with open(filename,"r") as file:
-            n = file.readlines();
-            r = n[0]
-            if "set firewall" in r:
-                if "filter" in r:
-                    end=1;
-            else:
-                end=0;
+        open(filename,"r")
     except:
-        print("Error: 'junosconftest.csv' must be in same folder or under '~/' if you run program from that location")
+        print("Error: 'junosconf.csv' must be in same folder or under '~/' if you run program from that location")
         exit()
-
+    with open(filename,"r") as file:
+        csvreader = csv.reader(file)
+        for row in csvreader:
+            if ("filter" in row[0]) and ("term" in row[0]):
+                end = 1
+                break
+            else:
+                continue
+    if end == 1:
+        #get all filternames and terms
+        print("Input verification completed")
+    else:
+        print(f"Can't find keywords filter and term in csv file. Please check the csv file {filename}")
+        exit()
+          
 def choice():
     global choose
     choose = input("Output needed is aegis or acl[aegis/acl]:")
     choose = choose.strip()
-    #print(choose)
     if choose != "aegis" and choose != "acl":
         print("Please type only aegis or acl")
         choice()
 
+#just call functions in sequence order
 def main():
-    #just call functions in sequence order
+    #choose aegis or acl
     choice()
+    #do precheck to make sure the junos conf in the csv file
     precheck()
-    #end= 1-continue ; 0-stop
-    if end == 1:
-        #get all filternames and terms
-        getfilternames()
-    else:
-        print("Does not looks like a junos command. Please check the input")
-        exit()
-    for filters in filterfinal:
-        sep = filters.split(';')
-        global filtername
-        global comment
-        filtername = sep[0]
-        comment = sep[1]
-        print(f"\nFound filtername:{filtername}")
-        print(f"Found Term:{comment}")
-        parse()
-        if choose == "aegis":
-            print("\nAegis Conversion started...")
-            print("Generating aegis Conf....")   
-            aegisfieldset()  
-            aegistrafficpolicy()
-            aegisprefix()
-            aegisprotocol()
-            aegisaction()
-            print("\n Completed configuration generation....")
-        elif choose == "acl":
-            print("ACL Conversion started....")
-            aclconvert()
-
+    #get all filternames and terms
+    getfilternames()
+    #conversion step and process
+    convert()
+    
 if __name__=='__main__':
        main()

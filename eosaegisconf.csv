@@ -1,68 +1,65 @@
-field-set ipv4 prefix Test1-source
-
-14.33.69.224/29
-14.33.69.232/29field-set ipv4 prefix Test1-destination
-
-14.33.69.232/29
-14.33.69.224/29traffic-policies
-traffic-policy Test1
-match 10 ipv4
-source prefix field-set Test1-source
-destination prefix field-set Test1-destination
-protocol tcp destination port bgpactions
-count
-field-set ipv4 prefix Test2-source
-
-40.33.69.22/29
-40.33.69.23/29field-set ipv4 prefix Test2-destination
-
-40.33.69.23/29
-40.33.69.22/29traffic-policies
-traffic-policy Test2
-match 20 ipv4
-source prefix field-set Test2-source
-destination prefix field-set Test2-destination
-protocol udp destination port dnsactions
-count
-drop
-field-set ipv4 prefix Test3-source
-
-40.33.69.22/29
-40.33.69.23/29
-42.33.69.224/29
-42.33.69.232/29
-42.33.97.141/32
-42.33.97.143/32
-42.33.97.173/32
-42.33.97.175/32field-set ipv4 prefix Test3-destination
-
-40.33.69.23/29
-40.33.69.22/29
-42.33.69.232/29
-42.33.69.224/29traffic-policies
-traffic-policy Test3
-match 40 ipv4
-source prefix field-set Test3-source
-destination prefix field-set Test3-destination
-protocol icmpactions
-count
-field-set ipv4 prefix Test3-source
-
-40.33.69.22/29
-40.33.69.23/29
-42.33.69.224/29
-42.33.69.232/29
-42.33.97.141/32
-42.33.97.143/32
-42.33.97.173/32
-42.33.97.175/32field-set ipv4 prefix Test3-destination
-
-40.33.69.23/29
-40.33.69.22/29
-42.33.69.232/29
-42.33.69.224/29traffic-policies
-traffic-policy Test3
-match 40 ipv4
-protocol icmp
+field-set ipv4 prefix TEST-MAPS-VOICE-PSTN-PREFIX
+152.12.0.0/15
+traffic-policies
+traffic-policy TEST-8075-MAPS-VOICE-PARTNER-IN-V4
+match TEST-HONOR-INBOUND-QOS-SIP ipv4
+destination prefix field-set TEST-MAPS-VOICE-PSTN-PREFIX
+protocol tcp destination port 5060-5061
+protocol udp destination port 5060-5061
 actions
 count
+
+field-set ipv4 prefix TEST-MAPS-VOICE-PSTN-PREFIX
+152.12.0.0/15
+traffic-policies
+traffic-policy TEST-8075-MAPS-VOICE-PARTNER-IN-V4
+match TEST-HONOR-INBOUND-QOS-MEDIA ipv4
+destination prefix field-set TEST-MAPS-VOICE-PSTN-PREFIX
+protocol tcp destination port 49152-53247
+protocol udp destination port 49152-53247
+actions
+count
+
+traffic-policies
+traffic-policy TEST-8075-MAPS-VOICE-PARTNER-IN-V4
+match CLEAR_DSCP ipv4
+actions
+
+field-set ipv4 prefix BOGON-V4
+
+0.0.0.0/32
+10.0.0.0/8
+127.0.0.0/8
+169.254.0.0/16
+172.16.0.0/12
+192.0.0.0/24
+192.0.2.0/24
+192.168.0.0/16
+198.18.0.0/15
+224.0.0.0/3traffic-policies
+traffic-policy TEST-8075-MAPS-VOICE-PARTNER-IN-V4
+match DENY-SRC-BOGON ipv4
+source prefix field-set BOGON-V4
+actions
+count
+drop
+
+field-set ipv4 prefix BOGON-V4
+0.0.0.0/32
+10.0.0.0/8
+127.0.0.0/8
+169.254.0.0/16
+172.16.0.0/12
+192.0.0.0/24
+192.0.2.0/24
+192.168.0.0/16
+198.18.0.0/15
+224.0.0.0/3
+traffic-policies
+traffic-policy TEST-8075-MAPS-VOICE-PARTNER-IN-V4
+match DENY-DST-BOGON ipv4
+destination prefix field-set BOGON-V4
+actions
+count
+drop
+
