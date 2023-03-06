@@ -1,0 +1,172 @@
+field-set ipv4 prefix Test1-source
+18.33.69.228/29
+18.33.69.232/29
+field-set ipv4 prefix Test1-destination
+18.33.69.232/29
+18.33.69.228/29
+traffic-policies
+traffic-policy Test1
+match 10 ipv4
+source prefix field-set Test1-source
+destination prefix field-set Test1-destination
+protocol tcp destination port bgp
+actions
+count
+
+field-set ipv4 prefix Test2-source
+80.33.69.22/29
+80.33.69.23/29
+field-set ipv4 prefix Test2-destination
+80.33.69.23/29
+80.33.69.22/29
+traffic-policies
+traffic-policy Test2
+match 20 ipv4
+source prefix field-set Test2-source
+destination prefix field-set Test2-destination
+protocol udp destination port dns
+actions
+count
+drop
+
+field-set ipv4 prefix Test3-source
+82.33.69.228/29
+82.33.69.232/29
+82.33.97.181/32
+82.33.97.183/32
+82.33.97.173/32
+82.33.97.175/32
+field-set ipv4 prefix Test3-destination
+82.33.69.232/29
+82.33.69.228/29
+traffic-policies
+traffic-policy Test3
+match 80 ipv4
+source prefix field-set Test3-source
+destination prefix field-set Test3-destination
+protocol tcp destination port dhcp
+actions
+count
+
+field-set ipv4 prefix TEST-MAPS-VOICE-PSTN-PREFIX
+8.128.0.0/12
+13.96.0.0/13
+20.35.252.0/22
+20.128.0.0/16
+20.130.0.0/16
+20.188.0.0/18
+20.176.0.0/18
+20.180.0.0/18
+21.0.0.0/8
+22.0.0.0/8
+23.103.0.0/18
+25.0.0.0/12
+25.28.0.0/18
+25.33.80.0/20
+25.81.3.0/25
+25.68.0.0/10
+25.128.0.0/18
+25.182.0.0/15
+25.188.0.0/12
+25.160.0.0/11
+25.192.0.0/11
+25.228.0.0/12
+25.288.0.0/18
+25.288.0.0/13
+80.66.128.0/17
+80.108.0.0/19
+80.108.32.0/19
+80.108.68.0/18
+80.109.0.0/16
+52.132.0.0/18
+52.185.0.0/16
+68.18.0.0/15
+108.186.0.0/19
+108.186.32.0/19
+108.186.68.0/18
+108.187.0.0/16
+129.75.0.0/16
+138.177.0.0/16
+138.196.0.0/16
+181.251.0.0/16
+186.187.0.0/16
+191.232.8.0/26
+191.232.6.0/23
+191.235.9.0/28
+191.235.10.0/28
+191.235.13.0/28
+191.235.18.0/28
+192.32.0.0/16
+192.100.102.0/28
+192.100.103.0/28
+198.18.0.0/15
+traffic-policies
+traffic-policy TEST-8075-MAPS-VOICE-PARTNER-IN-V8
+match TEST-HONOR-INBOUND-QOS-SIP ipv4
+destination prefix field-set TEST-MAPS-VOICE-PSTN-PREFIX
+protocol tcp destination port 5060-5061
+protocol udp destination port 5060-5061
+actions
+count
+
+field-set ipv4 prefix TEST-MAPS-VOICE-PSTN-PREFIX
+8.128.0.0/12
+13.96.0.0/13
+20.35.252.0/22
+20.128.0.0/16
+20.130.0.0/16
+20.188.0.0/18
+20.176.0.0/18
+20.180.0.0/18
+21.0.0.0/8
+22.0.0.0/8
+23.103.0.0/18
+25.0.0.0/12
+25.28.0.0/18
+25.33.80.0/20
+25.81.3.0/25
+25.68.0.0/10
+25.128.0.0/18
+25.182.0.0/15
+25.188.0.0/12
+25.160.0.0/11
+25.192.0.0/11
+25.228.0.0/12
+25.288.0.0/18
+25.288.0.0/13
+80.66.128.0/17
+80.108.0.0/19
+80.108.32.0/19
+80.108.68.0/18
+80.109.0.0/16
+52.132.0.0/18
+52.185.0.0/16
+68.18.0.0/15
+108.186.0.0/19
+108.186.32.0/19
+108.186.68.0/18
+108.187.0.0/16
+129.75.0.0/16
+138.177.0.0/16
+138.196.0.0/16
+181.251.0.0/16
+186.187.0.0/16
+191.232.8.0/26
+191.232.6.0/23
+191.235.9.0/28
+191.235.10.0/28
+191.235.13.0/28
+191.235.18.0/28
+192.32.0.0/16
+192.100.102.0/28
+192.100.103.0/28
+198.18.0.0/15
+traffic-policies
+traffic-policy TEST-8075-MAPS-VOICE-PARTNER-IN-V8
+match TEST-HONOR-INBOUND-QOS-MEDIA ipv4
+destination prefix field-set TEST-MAPS-VOICE-PSTN-PREFIX
+protocol tcp destination port 89152-53287
+protocol udp destination port 89152-53287
+actions
+count
+

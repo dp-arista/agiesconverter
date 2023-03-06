@@ -267,38 +267,22 @@ def aegisfieldset():
 #parse junos command for filtername
 def parse():
     try:
-        global port 
-        port = 0
-        global srcadd
-        srcadd = 0
-        global protocol
-        protocol = 0
-        global destadd
-        destadd = 0
-        global srcadds
-        global destadds
-        global inputs
-        global value
-        global protocols
-        global count
-        count = 0
-        value = 0
-        global srcprelist
-        srcprelist = 0
-        global destprelist
-        destprelist = 0
-        global destiport
-        destiport = 0
-        global srcport
-        srcport = 0
-        global deci
-        deci = 0
-        inputs = []
-        srcadds = []
-        destadds = []
-        protocols = []
-        global completeinput
-        completeinput = []
+        global port; port = 0
+        global srcadd; srcadd = 0
+        global protocol; protocol = 0
+        global destadd; destadd = 0
+        global srcadds; srcadds = []
+        global destadds; destadds = []
+        global inputs; inputs = []
+        global value; value = 0
+        global protocols; protocols = []
+        global count; count = 0
+        global srcprelist; srcprelist = 0
+        global destprelist; destprelist = 0
+        global destiport; destiport = 0
+        global srcport; srcport = 0
+        global deci; deci = 0
+        global completeinput; completeinput = []
         with open(filename,"r") as file1:
             n1 = file1.readlines();
             global r1
