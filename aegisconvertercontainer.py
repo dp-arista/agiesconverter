@@ -17,8 +17,8 @@ def aclcount():
 def aclcondition():
     with open("eosaclconf.csv","a") as eos:
         #with protocol and source and destination prefixlist
-        #if protocol, source prefix list, source-port(srcport), destination prefix list, destination-port(destiport) are present ; port after source(srcadport), port after destination(destiadport) are not present;
-        if (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        #if protocol, source prefix list, source-port(srcport), destination prefix list, destination-port(destiport) are present ; port after source(port), port after destination(port) are not present;
+        if (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
@@ -26,196 +26,303 @@ def aclcondition():
                             for destasportjoin in destasportjoinfinal:
                                 eos.write(f"{deci} {protoco} {src} {srcportjoin} {dest} {destasportjoin}\n")
                                 print(f"{deci} {protoco} {src} {srcportjoin} {dest} {destasportjoin}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                     for dest in destas:
-                        eos.write(f"{deci} {protoco} any {dest} {destiadport}\n")
-                        print(f"{deci} {protoco} any {dest} {destiadport}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport != 0) and (destiadport != 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} any {dest} {por}\n")
+                            print(f"{deci} {protoco} any {dest} {por}")
+                            eos.write(f"{deci} {protoco} any {por} {dest}\n")
+                            print(f"{deci} {protoco} any {por} {dest}")
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for src in srcas:
-                    eos.write(f"{deci} {protoco} {src} {srcadport} any {destiadport} \n")
-                    print(f"{deci} {protoco} {src} {srcadport} any {destiadport}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} {src} any {por} \n")
+                        print(f"{deci} {protoco} {src} any {por}")
+                        eos.write(f"{deci} {protoco} {src} {por} any \n")
+                        print(f"{deci} {protoco} {src} {por} any")
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for srcportjoin in srcportjoinfinal:
-                    eos.write(f"{deci} {protoco} any {srcportjoin} any {destiadport}\n")
-                    print(f"{deci} {protoco} any {srcportjoin} anany {destiadport}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport != 0) and (destiadport != 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any {srcportjoin} any {por}\n")
+                        print(f"{deci} {protoco} any {srcportjoin} any {por}")
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for dest in destas:
-                    eos.write(f"{deci} {protoco} any {srcadport} {dest} {destiadport} \n")
-                    print(f"{deci} {protoco} any {srcadport} {dest} {destiadport}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport != 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any {dest} {por} \n")
+                        print(f"{deci} {protoco} any {dest} {por}")
+                        eos.write(f"{deci} {protoco} any {por} {dest} \n")
+                        print(f"{deci} {protoco} any {por} {dest}")
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port != 0):
             for protoco in protocols:
                 for destasportjoin in destasportjoinfinal:
-                    eos.write(f"{deci} {protoco} any {srcadport} any {destasportjoin}\n")
-                    print(f"{deci} {protoco} any {srcadport} any {destasportjoin}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any {por} any {destasportjoin}\n")
+                        print(f"{deci} {protoco} any {por} any {destasportjoin}")
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
                         for srcportjoin in srcportjoinfinal:
-                            eos.write(f"{deci} {protoco} {src} {srcportjoin} {dest} {destiadport} \n")
-                            print(f"{deci} {protoco} {src} {srcportjoin} {dest} {destiadport}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                            for por in ports:
+                                eos.write(f"{deci} {protoco} {src} {dest} {por}\n")
+                                print(f"{deci} {protoco} {src} {dest} {por}")
+                                eos.write(f"{deci} {protoco} {src} {por} {dest}\n")
+                                print(f"{deci} {protoco} {src} {por} {dest}")
+                                eos.write(f"{deci} {protoco} {src} {srcportjoin} {dest} \n")
+                                print(f"{deci} {protoco} {src} {srcportjoin} {dest}")
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for src in srcas:
                     for srcportjoin in srcportjoinfinal:
-                        eos.write(f"{deci} {protoco} {src} {srcportjoin} any {destiadport}\n")
-                        print(f"{deci} {protoco} {src} {srcportjoin} anany {destiadport}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} {src} any {por}\n")
+                            print(f"{deci} {protoco} {src} any {por}")
+                            eos.write(f"{deci} {protoco} {src} {por} any\n")
+                            print(f"{deci} {protoco} {src} {por} any")
+                            eos.write(f"{deci} {protoco} {src} {srcportjoin} any\n")
+                            print(f"{deci} {protoco} {src} {srcportjoin} any")
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for dest in destas:
                     for srcportjoin in srcportjoinfinal:
-                        eos.write(f"{deci} {protoco} any {srcportjoin} {dest} {destiadport}\n")
-                        print(f"{deci} {protoco} any {srcportjoin} {dest} {destiadport}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport != 0) and (destiadport != 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} {src} {dest} {por}\n")
+                            print(f"{deci} {protoco} {src} {dest} {por}")
+                            eos.write(f"{deci} {protoco} {src} {por} {dest}\n")
+                            print(f"{deci} {protoco} {src} {por} {dest}")
+                            eos.write(f"{deci} {protoco} any {srcportjoin} {dest} \n")
+                            print(f"{deci} {protoco} any {srcportjoin} {dest}")
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
-                        eos.write(f"{deci} {protoco} {src} {srcadport}  {dest} {destiadport}\n")
-                        print(f"{deci} {protoco} {src} {srcadport}  {dest} {destiadport}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport != 0) and (destiadport == 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} {src} {dest} {por}\n")
+                            print(f"{deci} {protoco} {src} {dest} {por}")
+                            eos.write(f"{deci} {protoco} {src} {por} {dest}\n")
+                            print(f"{deci} {protoco} {src} {por} {dest}")
+                            eos.write(f"{deci} {protoco} {src} {dest}\n")
+                            print(f"{deci} {protoco} {src} {dest}")
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port != 0):
             for protoco in protocols:
                 for destasportjoin in destasportjoinfinal:
-                    eos.write(f"{deci} {protoco} any {srcadport} any {destasportjoin} \n")
-                    print(f"{deci} {protoco} any {srcadport} any {destasportjoin}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport != 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} {src} {dest} {por}\n")
+                        print(f"{deci} {protoco} {src} {dest} {por}")
+                        eos.write(f"{deci} {protoco} {src} {por} {dest}\n")
+                        print(f"{deci} {protoco} {src} {por} {dest}")
+                        eos.write(f"{deci} {protoco} any any {destasportjoin} \n")
+                        print(f"{deci} {protoco} any any {destasportjoin}")
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port != 0):
             for protoco in protocols:
                 for src in srcas:
                     for destasportjoin in destasportjoinfinal:
-                        eos.write(f"{deci} {protoco} {src} {srcadport} any {destasportjoin} \n")
-                        print(f"{deci} {protoco} {src} {srcadport} any {destasportjoin}")             
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} {src} {dest} {por}\n")
+                            print(f"{deci} {protoco} {src} {dest} {por}")
+                            eos.write(f"{deci} {protoco} {src} {por} {dest}\n")
+                            print(f"{deci} {protoco} {src} {por} {dest}")
+                            eos.write(f"{deci} {protoco} {src} any {destasportjoin} \n")
+                            print(f"{deci} {protoco} {src} any {destasportjoin}")             
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for srcportjoin in srcportjoinfinal:
-                    eos.write(f"{deci} {protoco} any {srcportjoin} any {destiadport}\n")
-                    print(f"{deci} {protoco} any {srcportjoin} anany {destiadport}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} {src} {dest} {por}\n")
+                        print(f"{deci} {protoco} {src} {dest} {por}")
+                        eos.write(f"{deci} {protoco} {src} {por} {dest}\n")
+                        print(f"{deci} {protoco} {src} {por} {dest}")
+                        eos.write(f"{deci} {protoco} any {srcportjoin} any\n")
+                        print(f"{deci} {protoco} any {srcportjoin} any")
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for dest in destas:
                     for srcportjoin in srcportjoinfinal:
                         for destasportjoin in destasportjoinfinal:
                             eos.write(f"{deci} {protoco} any {srcportjoin} {dest} {destasportjoin} \n")
                             print(f"{deci} {protoco} any {srcportjoin} {dest} {destasportjoin} ") 
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (srcadport != 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (port != 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
                         for srcportjoin in srcportjoinfinal:
                             for destasportjoin in destasportjoinfinal:
-                                eos.write(f"{deci} {protoco} {src} {srcadport} {dest} {destasportjoin}\n")
-                                print(f"{deci} {protoco} {src} {srcadport} {dest} {destasportjoin}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+                                for por in ports:
+                                    eos.write(f"{deci} {protoco} {src} {dest} {por}\n")
+                                    print(f"{deci} {protoco} {src} {dest} {por}")
+                                    eos.write(f"{deci} {protoco} {src} {por} {dest}\n")
+                                    print(f"{deci} {protoco} {src} {por} {dest}")
+                                    eos.write(f"{deci} {protoco} {src} {dest} {destasportjoin}\n")
+                                    print(f"{deci} {protoco} {src} {dest} {destasportjoin}")
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for srcportjoin in srcportjoinfinal:
                         for destasportjoin in destasportjoinfinal:
                             eos.write(f"{deci} {protoco} {src} {srcportjoin} any {destasportjoin}\n")
                             print(f"{deci} {protoco} {src} {srcportjoin} any {destasportjoin}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for srcportjoin in srcportjoinfinal:
                         for destasportjoin in destasportjoinfinal:
                             eos.write(f"{deci} {protoco} any {srcportjoin} any {destasportjoin}\n")
                             print(f"{deci} {protoco} any {srcportjoin} any {destasportjoin}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport != 0) and (destiadport != 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
-                for src in srcas:
-                    for dest in destas:
-                        eos.write(f"{deci} {protoco} any {srcadport} any {destiadport}\n")
-                        print(f"{deci} {protoco} any {srcadport} anany {destiadport}")
+                for por in ports:
+                    eos.write(f"{deci} {protoco} any any {por}\n")
+                    print(f"{deci} {protoco} any any {por}")
+                    eos.write(f"{deci} {protoco} any {por} any\n")
+                    print(f"{deci} {protoco} any {por} any")
         #without protocol with source and destination prefixlist
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for src in srcas:
                 for dest in destas:
                     for srcportjoin in srcportjoinfinal:
                         for destasportjoin in destasportjoinfinal:
                             eos.write(f"{deci} ip {src} {srcportjoin} {dest} {destasportjoin}\n")
                             print(f"{deci} ip {src} {srcportjoin} {dest} {destasportjoin}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport != 0) and (destiadport != 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for src in srcas:
                 eos.write(f"{deci} ip {src} any \n")
                 print(f"{deci} ip {src} any ")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for srcportjoin in srcportjoinfinal:
-                eos.write(f"{deci} ip any {srcportjoin} any {destiadport}\n")
-                print(f"{deci} ip any {srcportjoin} anany {destiadport}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport != 0) and (destiadport != 0):
+                for por in ports:
+                    eos.write(f"{deci} {protoco} any any {por}\n")
+                    print(f"{deci} {protoco} any any {por}")
+                    eos.write(f"{deci} {protoco} any {por} any\n")
+                    print(f"{deci} {protoco} any {por} any")
+                    eos.write(f"{deci} ip any {srcportjoin} any \n")
+                    print(f"{deci} ip any {srcportjoin} any")
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
             
                 for dest in destas:
-                    eos.write(f"{deci} ip any {srcadport} {dest} {destiadport}\n")
-                    print(f"{deci} ip any {srcadport} {dest} {destiadport}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport != 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+                        eos.write(f"{deci} ip any {dest}\n")
+                        print(f"{deci} ip any {dest}")
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port != 0):
             for destasportjoin in destasportjoinfinal:
-                eos.write(f"{deci} ip any {srcadport} any {destasportjoin} \n")
-                print(f"{deci} ip any {srcadport} any {destasportjoin}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                for por in ports:
+                    eos.write(f"{deci} {protoco} any any {por}\n")
+                    print(f"{deci} {protoco} any any {por}")
+                    eos.write(f"{deci} {protoco} any {por} any\n")
+                    print(f"{deci} {protoco} any {por} any")
+                    eos.write(f"{deci} ip any any {destasportjoin} \n")
+                    print(f"{deci} ip any any {destasportjoin}")
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
             for srcportjoin in srcportjoinfinal:
                 for src in srcas:
                     for dest in destas:
-                        eos.write(f"{deci} ip {src} {srcportjoin} {dest} {destiadport}\n")
-                        print(f"{deci} ip {src} {srcportjoin} {dest} {destiadport}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} any any {por}\n")
+                            print(f"{deci} {protoco} any any {por}")
+                            eos.write(f"{deci} {protoco} any {por} any\n")
+                            print(f"{deci} {protoco} any {por} any")
+                            eos.write(f"{deci} ip {src} {srcportjoin} {dest} \n")
+                            print(f"{deci} ip {src} {srcportjoin} {dest} ")
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for srcportjoin in srcportjoinfinal:
                 for src in srcas:
-                    eos.write(f"{deci} ip {src} {srcportjoin} any {destiadport}\n")
-                    print(f"{deci} ip {src} {srcportjoin} anany {destiadport}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                    eos.write(f"{deci} ip {src} {srcportjoin} any {port}\n")
+                    print(f"{deci} ip {src} {srcportjoin} any {port}")
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
                 for dest in destas:
-                    eos.write(f"{deci} ip any {srcportjoin} {dest} {destiadport}\n")
-                    print(f"{deci} ip any {srcportjoin} {dest} {destiadport}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport != 0) and (destiadport != 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+                        eos.write(f"{deci} ip any {srcportjoin} {dest} \n")
+                        print(f"{deci} ip any {srcportjoin} {dest}")
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
                 for src in srcas:
                     for dest in destas:
-                        eos.write(f"{deci} ip {src} {srcadport} {dest} {destiadport}\n")
-                        print(f"{deci} ip {src} {srcadport} {dest} {destiadport}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport != 0) and (destiadport == 0):
-            for destasportjoin in destasportjoinfinal:  
-                eos.write(f"{deci} ip any {srcadport} any {destasportjoin} \n")
-                print(f"{deci} ip any {srcadport} any {destasportjoin}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport != 0) and (destiadport == 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} any any {por}\n")
+                            print(f"{deci} {protoco} any any {por}")
+                            eos.write(f"{deci} {protoco} any {por} any\n")
+                            print(f"{deci} {protoco} any {por} any")
+                            eos.write(f"{deci} ip {src} {dest}\n")
+                            print(f"{deci} ip {src} {dest}")
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port != 0):
+            for destasportjoin in destasportjoinfinal:
+                for por in ports:
+                    eos.write(f"{deci} {protoco} any any {por}\n")
+                    print(f"{deci} {protoco} any any {por}")
+                    eos.write(f"{deci} {protoco} any {por} any\n")
+                    print(f"{deci} {protoco} any {por} any")  
+                    eos.write(f"{deci} ip any any {destasportjoin} \n")
+                    print(f"{deci} ip any any {destasportjoin}")
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port != 0):
             for destasportjoin in destasportjoinfinal:
                 for src in srcas:
-                    eos.write(f"{deci} ip {src} {srcadport} any {destasportjoin} \n")
-                    print(f"{deci} ip {src} {srcadport} any {destasportjoin}")             
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+                        eos.write(f"{deci} ip {src} any {destasportjoin} \n")
+                        print(f"{deci} ip {src} any {destasportjoin}")             
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for srcportjoin in srcportjoinfinal:
-                eos.write(f"{deci} ip any {srcportjoin} any {destiadport}\n")
-                print(f"{deci} ip any {srcportjoin} anany {destiadport}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+                for por in ports:
+                    eos.write(f"{deci} {protoco} any any {por}\n")
+                    print(f"{deci} {protoco} any any {por}")
+                    eos.write(f"{deci} {protoco} any {por} any\n")
+                    print(f"{deci} {protoco} any {por} any")
+                    eos.write(f"{deci} ip any {srcportjoin} any \n")
+                    print(f"{deci} ip any {srcportjoin} any")
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 for destasportjoin in destasportjoinfinal:
                     for dest in destas:
                         eos.write(f"{deci} ip any {srcportjoin} {dest} {destasportjoin} \n")
                         print(f"{deci} ip any {srcportjoin} {dest} {destasportjoin} ") 
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (srcadport != 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (port != 0):
             for destasportjoin in destasportjoinfinal:           
                 for src in srcas:
                     for dest in destas:
-                        eos.write(f"{deci} ip {src} {srcadport} {dest} {destasportjoin}\n")
-                        print(f"{deci} ip {src} {srcadport} {dest} {destasportjoin}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} any any {por}\n")
+                            print(f"{deci} {protoco} any any {por}")
+                            eos.write(f"{deci} {protoco} any {por} any\n")
+                            print(f"{deci} {protoco} any {por} any")
+                            eos.write(f"{deci} ip {src} {dest} {destasportjoin}\n")
+                            print(f"{deci} ip {src} {dest} {destasportjoin}")
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 for destasportjoin in destasportjoinfinal: 
                     for src in srcas:
                         eos.write(f"{deci} ip {src} {srcportjoin} any {destasportjoin}\n")
                         print(f"{deci} ip {src} {srcportjoin} any {destasportjoin}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 for destasportjoin in destasportjoinfinal:
                     for src in srcas:
                         eos.write(f"{deci} ip any {srcportjoin} any {destasportjoin}\n")
                         print(f"{deci} ip any {srcportjoin} any {destasportjoin}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport != 0) and (destiadport != 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
                 for src in srcas:
                     for dest in destas:
-                        eos.write(f"{deci} ip any {srcadport} any {destiadport}\n")
-                        print(f"{deci} ip any {srcadport} anany {destiadport}")
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} any any {por}\n")
+                            print(f"{deci} {protoco} any any {por}")
+                            eos.write(f"{deci} {protoco} any {por} any\n")
+                            print(f"{deci} {protoco} any {por} any")
+                            eos.write(f"{deci} ip any any\n")
+                            print(f"{deci} ip any any")
         #with only ports keyword not present
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
@@ -223,75 +330,75 @@ def aclcondition():
                             for destasportjoin in destasportjoinfinal:
                                 eos.write(f"{deci} {protoco} {src} {srcportjoin} {dest} {destasportjoin}\n")
                                 print(f"{deci} {protoco} {src} {srcportjoin} {dest} {destasportjoin}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     eos.write(f"{deci} {protoco} {src} any \n")
                     print(f"{deci} {protoco} {src} any ")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for srcportjoin in srcportjoinfinal:
                     eos.write(f"{deci} {protoco} any {srcportjoin} any \n")
                     print(f"{deci} {protoco} any {srcportjoin} any")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for dest in destas:
                     eos.write(f"{deci} {protoco} any {dest} \n")
                     print(f"{deci} {protoco} any {dest}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for destasportjoin in destasportjoinfinal:
                     eos.write(f"{deci} {protoco} any any {destasportjoin} \n")
                     print(f"{deci} {protoco} any any {destasportjoin}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
                         for srcportjoin in srcportjoinfinal:
                             eos.write(f"{deci} {protoco} {src} {srcportjoin} {dest} \n")
                             print(f"{deci} {protoco} {src} {srcportjoin} {dest} ")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for srcportjoin in srcportjoinfinal:
                         eos.write(f"{deci} {protoco} {src} {srcportjoin} any \n")
                         print(f"{deci} {protoco} {src} {srcportjoin} any ")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for dest in destas:
                     for srcportjoin in srcportjoinfinal:
                         eos.write(f"{deci} {protoco} any {srcportjoin} {dest}\n")
                         print(f"{deci} {protoco} any {srcportjoin} {dest}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
                         eos.write(f"{deci} {protoco} {src} {dest} \n")
                         print(f"{deci} {protoco} {src} {dest} ")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for destasportjoin in destasportjoinfinal:
                     eos.write(f"{deci} {protoco} any any {destasportjoin} \n")
                     print(f"{deci} {protoco} any any {destasportjoin}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for destasportjoin in destasportjoinfinal:
                         eos.write(f"{deci} {protoco} {src} any {destasportjoin} \n")
                         print(f"{deci} {protoco} {src} any {destasportjoin}")             
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for srcportjoin in srcportjoinfinal:
                     eos.write(f"{deci} {protoco} any {srcportjoin} any \n")
                     print(f"{deci} {protoco} any {srcportjoin} any ")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for dest in destas:
                     for srcportjoin in srcportjoinfinal:
                         for destasportjoin in destasportjoinfinal:
                             eos.write(f"{deci} {protoco} any {srcportjoin} {dest} {destasportjoin} \n")
                             print(f"{deci} {protoco} any {srcportjoin} {dest} {destasportjoin} ") 
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
@@ -299,283 +406,381 @@ def aclcondition():
                             for destasportjoin in destasportjoinfinal:
                                 eos.write(f"{deci} {protoco} {src} {dest} {destasportjoin}\n")
                                 print(f"{deci} {protoco} {src} {dest} {destasportjoin}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for srcportjoin in srcportjoinfinal:
                         for destasportjoin in destasportjoinfinal:
                             eos.write(f"{deci} {protoco} {src} {srcportjoin} any {destasportjoin}\n")
                             print(f"{deci} {protoco} {src} {srcportjoin} any {destasportjoin}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                 for srcportjoin in srcportjoinfinal:
                     for destasportjoin in destasportjoinfinal:
                         eos.write(f"{deci} {protoco} any {srcportjoin} any {destasportjoin}\n")
                         print(f"{deci} {protoco} any {srcportjoin} any {destasportjoin}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport != 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for src in srcas:
-                    eos.write(f"{deci} {protoco} {src} {srcadport} any\n")
-                    print(f"{deci} {protoco} {src} {srcadport} any")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+                    eos.write(f"{deci} {protoco} {src} {port} any\n")
+                    print(f"{deci} {protoco} {src} {port} any")
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for protoco in protocols:
                     for dest in destas:
                         for destasportjoin in destasportjoinfinal:
-                            eos.write(f"{deci} {protoco} any {dest} {destasportjoinfinal}\n")
-                            print(f"{deci} {protoco} any {dest} {destasportjoinfinal}")
-        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport != 0):
+                            eos.write(f"{deci} {protoco} any {dest} {destasportjoin}\n")
+                            print(f"{deci} {protoco} any {dest} {destasportjoin}")
+        elif (protocol != 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port != 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
-                        eos.write(f"{deci} {protoco} {src} {dest} {destiadport}\n")
-                        print(f"{deci} {protoco} {src} {dest} {destiadport}")
-        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+                        eos.write(f"{deci} {protoco} {src} {dest} {port}\n")
+                        print(f"{deci} {protoco} {src} {dest} {port}")
+        elif (protocol != 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for protoco in protocols:
                 for src in srcas:
                     for dest in destas:
                         eos.write(f"{deci} {protoco} any any\n")
                         print(f"{deci} {protoco} any any")
         #without protocol with source and destination prefixlist
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for src in srcas:
                 for dest in destas:
                     for srcportjoin in srcportjoinfinal:
                         for destasportjoin in destasportjoinfinal:
                             eos.write(f"{deci} ip {src} {srcportjoin} {dest} {destasportjoin}\n")
                             print(f"{deci} ip {src} {srcportjoin} {dest} {destasportjoin}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for src in srcas:
                 eos.write(f"{deci} ip {src} any \n")
                 print(f"{deci} ip {src} any ")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 eos.write(f"{deci} ip any {srcportjoin} any \n")
                 print(f"{deci} ip any {srcportjoin} any")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):         
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port == 0):         
                 for dest in destas:
                     eos.write(f"{deci} ip any {dest} \n")
                     print(f"{deci} ip any {dest}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for destasportjoin in destasportjoinfinal:
                 eos.write(f"{deci} ip any any {destasportjoin} \n")
                 print(f"{deci} ip any any {destasportjoin}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 for src in srcas:
                     for dest in destas:
                         eos.write(f"{deci} ip {src} {srcportjoin} {dest} \n")
                         print(f"{deci} ip {src} {srcportjoin} {dest} ")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 for src in srcas:
                     eos.write(f"{deci} ip {src} {srcportjoin} any \n")
                     print(f"{deci} ip {src} {srcportjoin} any ")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport == 0) and (port == 0):
             
                 for dest in destas:
                     eos.write(f"{deci} ip any {srcportjoin} {dest}\n")
                     print(f"{deci} ip any {srcportjoin} {dest}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport == 0) and (port == 0):
                 for src in srcas:
                     for dest in destas:
                         eos.write(f"{deci} ip {src} {dest} \n")
                         print(f"{deci} ip {src} {dest} ")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for destasportjoin in destasportjoinfinal:  
                 eos.write(f"{deci} ip any any {destasportjoin} \n")
                 print(f"{deci} ip any any {destasportjoin}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for destasportjoin in destasportjoinfinal:
                 for src in srcas:
                     eos.write(f"{deci} ip {src} any {destasportjoin} \n")
                     print(f"{deci} ip {src} any {destasportjoin}")             
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 eos.write(f"{deci} ip any {srcportjoin} any \n")
                 print(f"{deci} ip any {srcportjoin} any ")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 for destasportjoin in destasportjoinfinal:
                     for dest in destas:
                         eos.write(f"{deci} ip any {srcportjoin} {dest} {destasportjoin} \n")
                         print(f"{deci} ip any {srcportjoin} {dest} {destasportjoin} ") 
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport == 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
             for destasportjoin in destasportjoinfinal:           
                 for src in srcas:
                     for dest in destas:
                         eos.write(f"{deci} ip {src} {dest} {destasportjoin}\n")
                         print(f"{deci} ip {src} {dest} {destasportjoin}")
-        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 for destasportjoin in destasportjoinfinal: 
                     for src in srcas:
                         eos.write(f"{deci} ip {src} {srcportjoin} any {destasportjoin}\n")
                         print(f"{deci} ip {src} {srcportjoin} any {destasportjoin}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport != 0) and (destprelist == 0) and (destiport != 0) and (port == 0):
             for srcportjoin in srcportjoinfinal:
                 for destasportjoin in destasportjoinfinal:
                     for src in srcas:
                         eos.write(f"{deci} ip any {srcportjoin} any {destasportjoin}\n")
                         print(f"{deci} ip any {srcportjoin} any {destasportjoin}")
-        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (srcadport == 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcprelist == 0)  and (srcport == 0) and (destprelist == 0) and (destiport == 0) and (port == 0):
                 for src in srcas:
                     for dest in destas:
                         eos.write(f"{deci} ip any any\n")
                         print(f"{deci} ip any any")
 
         #with protocol and source address and destination address
-        elif (protocol != 0) and (srcadd != 0)  and (srcadport != 0) and (destadd != 0) and (destiadport != 0):
+        elif (protocol != 0) and (srcadd != 0)  and (port != 0) and (destadd != 0):
             for protoco in protocols:
                 for srcad in srcadds:
                     for destad in destadds:
-                        eos.write(f"{deci} {protoco} {srcad}  {srcadport} {destad}  {destiadport}\n")
-                        print(f"{deci} {protoco} {srcad}  {srcadport} {destad}  {destiadport}")
-        elif (protocol != 0) and (srcadd != 0)  and (srcadport == 0) and (destadd == 0) and (destiadport == 0):
+                        eos.write(f"{deci} {protoco} {srcad}  {port} {destad}  {port}\n")
+                        print(f"{deci} {protoco} {srcad}  {port} {destad}  {port}")
+        elif (protocol != 0) and (srcadd != 0)  and (port == 0) and (destadd == 0):
             for protoco in protocols:
                 for srcad in srcadds:
                     eos.write(f"{deci} {protoco} {srcad} any \n")
                     print(f"{deci} {protoco} {srcad} any ")
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport != 0) and (destadd == 0) and (destiadport == 0):
+        elif (protocol != 0) and (srcadd == 0)  and (port != 0) and (destadd == 0):
             for protoco in protocols:
-                eos.write(f"{deci} {protoco} any  {srcadport} any \n")
-                print(f"{deci} {protoco} any  {srcadport} any")
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport == 0) and (destadd != 0) and (destiadport == 0):
+                eos.write(f"{deci} {protoco} any  {port} any \n")
+                print(f"{deci} {protoco} any  {port} any")
+        elif (protocol != 0) and (srcadd == 0)  and (port == 0) and (destadd != 0):
             for protoco in protocols:
                 for destad in destadds:
                     eos.write(f"{deci} {protoco} any {destad} \n")
                     print(f"{deci} {protoco} any {destad}")
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport == 0) and (destadd == 0) and (destiadport != 0):
+        elif (protocol != 0) and (srcadd == 0)  and (port != 0) and (destadd == 0):
             for protoco in protocols:
-                eos.write(f"{deci} {protoco} any any {destiadport}\n")
-                print(f"{deci} {protoco} any any {destiadport}")
-        elif (protocol != 0) and (srcadd != 0)  and (srcadport != 0) and (destadd != 0) and (destiadport == 0):
+                eos.write(f"{deci} {protoco} any any {port}\n")
+                print(f"{deci} {protoco} any any {port}")
+        elif (protocol != 0) and (srcadd != 0)  and (port != 0) and (destadd != 0):
             for protoco in protocols:
                 for srcad in srcadds:
                     for destad in destadds:
-                        eos.write(f"{deci} {protoco} {srcad}  {srcadport} {destad} \n")
-                        print(f"{deci} {protoco} {srcad}  {srcadport} {destad} ")
-        elif (protocol != 0) and (srcadd != 0)  and (srcadport != 0) and (destadd == 0) and (destiadport == 0):
+                        eos.write(f"{deci} {protoco} {srcad}  {port} {destad} \n")
+                        print(f"{deci} {protoco} {srcad}  {port} {destad} ")
+        elif (protocol != 0) and (srcadd != 0)  and (port != 0) and (destadd == 0):
             for protoco in protocols:
                 for srcad in srcadds:
-                    eos.write(f"{deci} {protoco} {srcad}  {srcadport} any \n")
-                    print(f"{deci} {protoco} {srcad}  {srcadport} any ")
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport != 0) and (destadd != 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+                        eos.write(f"{deci} {protoco} {srcad} any \n")
+                        print(f"{deci} {protoco} {srcad} any ")
+        elif (protocol != 0) and (srcadd == 0)  and (port != 0) and (destadd != 0):
             for protoco in protocols:
                 for destad in destadds:
-                    eos.write(f"{deci} {protoco} any  {srcadport} {destad}\n")
-                    print(f"{deci} {protoco} any  {srcadport} {destad}")
-        elif (protocol != 0) and (srcadd != 0)  and (srcadport == 0) and (destadd != 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+                        eos.write(f"{deci} {protoco} any {destad}\n")
+                        print(f"{deci} {protoco} any {destad}")
+        elif (protocol != 0) and (srcadd != 0)  and (port == 0) and (destadd != 0):
             for protoco in protocols:
                 for srcad in srcadds:
                     for destad in destadds:
                         eos.write(f"{deci} {protoco} {srcad} {destad} \n")
                         print(f"{deci} {protoco} {srcad} {destad} ")
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport == 0) and (destadd == 0) and (destiadport != 0):
+        elif (protocol != 0) and (srcadd == 0) and (destadd == 0) and (port != 0):
             for protoco in protocols:
-                eos.write(f"{deci} {protoco} any any  {destiadport} \n")
-                print(f"{deci} {protoco} any any  {destiadport}")
-        elif (protocol != 0) and (srcadd != 0)  and (srcadport == 0) and (destadd == 0) and (destiadport != 0):
+                for por in ports:
+                    eos.write(f"{deci} {protoco} any any {por}\n")
+                    print(f"{deci} {protoco} any any {por}")
+                    eos.write(f"{deci} {protoco} any {por} any\n")
+                    print(f"{deci} {protoco} any {por} any")
+                    eos.write(f"{deci} {protoco} any any \n")
+                    print(f"{deci} {protoco} any any")
+        elif (protocol != 0) and (srcadd != 0) and (destadd == 0) and (port != 0):
             for protoco in protocols:
                 for srcad in srcadds:
-                    eos.write(f"{deci} {protoco} {srcad} any  {destiadport} \n")
-                    print(f"{deci} {protoco} {srcad} any  {destiadport}")             
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport != 0) and (destadd == 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+                        eos.write(f"{deci} {protoco} {srcad} any \n")
+                        print(f"{deci} {protoco} {srcad} any ")             
+        elif (protocol != 0) and (srcadd == 0)  and (port != 0) and (destadd == 0):
             for protoco in protocols:
-                eos.write(f"{deci} {protoco} any  {srcadport} any \n")
-                print(f"{deci} {protoco} any  {srcadport} any ")
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport != 0) and (destadd != 0) and (destiadport != 0):
+                for por in ports:
+                    eos.write(f"{deci} {protoco} any any {por}\n")
+                    print(f"{deci} {protoco} any any {por}")
+                    eos.write(f"{deci} {protoco} any {por} any\n")
+                    print(f"{deci} {protoco} any {por} any")
+        elif (protocol != 0) and (srcadd == 0)  and (port != 0) and (destadd != 0):
             for protoco in protocols:
                 for destad in destadds:
-                    eos.write(f"{deci} {protoco} any  {srcadport} {destad}  {destiadport} \n")
-                    print(f"{deci} {protoco} any  {srcadport} {destad}  {destiadport} ") 
-        elif (protocol != 0) and (srcadd != 0)  and (srcadport == 0) and (destadd != 0) and (destiadport != 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+                        eos.write(f"{deci} {protoco} any {destad}\n")
+                        print(f"{deci} {protoco} any {destad}") 
+        elif (protocol != 0) and (srcadd != 0) and (destadd != 0) and (port != 0):
             for protoco in protocols:
                 for srcad in srcadds:
                     for destad in destadds:
-                        eos.write(f"{deci} {protoco} {srcad} {destad}  {destiadport}\n")
-                        print(f"{deci} {protoco} {srcad} {destad}  {destiadport}")
-        elif (protocol != 0) and (srcadd != 0)  and (srcadport != 0) and (destadd == 0) and (destiadport != 0):
+                        for por in ports:
+                            eos.write(f"{deci} {protoco} any any {por}\n")
+                            print(f"{deci} {protoco} any any {por}")
+                            eos.write(f"{deci} {protoco} any {por} any\n")
+                            print(f"{deci} {protoco} any {por} any")
+                            eos.write(f"{deci} {protoco} {srcad} {destad} \n")
+                            print(f"{deci} {protoco} {srcad} {destad}")
+        elif (protocol != 0) and (srcadd != 0)  and (port != 0) and (destadd == 0):
             for protoco in protocols:
                 for srcad in srcadds:
-                    eos.write(f"{deci} {protoco} {srcad}  {srcadport} any  {destiadport}\n")
-                    print(f"{deci} {protoco} {srcad}  {srcadport} any  {destiadport}")
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport != 0) and (destadd == 0) and (destiadport != 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+                        eos.write(f"{deci} {protoco} {srcad} any\n")
+                        print(f"{deci} {protoco} {srcad} any")
+        elif (protocol != 0) and (srcadd == 0)  and (port != 0) and (destadd == 0):
             for protoco in protocols:
                 for srcad in srcadds:
-                    eos.write(f"{deci} {protoco} any  {srcadport} any  {destiadport}\n")
-                    print(f"{deci} {protoco} any  {srcadport} any  {destiadport}")
-        elif (protocol != 0) and (srcadd == 0)  and (srcadport == 0) and (destadd == 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} {protoco} any any {por}\n")
+                        print(f"{deci} {protoco} any any {por}")
+                        eos.write(f"{deci} {protoco} any {por} any\n")
+                        print(f"{deci} {protoco} any {por} any")
+        elif (protocol != 0) and (srcadd == 0)  and (port == 0) and (destadd == 0):
             for protoco in protocols:
                 for srcad in srcadds:
                     for destad in destadds:
                         eos.write(f"{deci} {protoco} any any\n")
                         print(f"{deci} {protoco} any any")
         #without protocol with source and destination prefixlist
-        elif (protocol == 0) and (srcadd != 0)  and (srcadport != 0) and (destadd != 0) and (destiadport != 0):   
+        elif (protocol == 0) and (srcadd != 0)  and (port != 0) and (destadd != 0):   
                 for srcad in srcadds:
                     for destad in destadds:
-                        eos.write(f"{deci} ip {srcad}  {srcadport} {destad}  {destiadport}\n")
-                        print(f"{deci} ip {srcad}  {srcadport} {destad}  {destiadport}")
-        elif (protocol == 0) and (srcadd != 0)  and (srcadport == 0) and (destadd == 0) and (destiadport == 0):    
+                        for por in ports:
+                            eos.write(f"{deci} ip any any {por}\n")
+                            print(f"{deci} ip any any {por}")
+                            eos.write(f"{deci} ip any {por} any\n")
+                            print(f"{deci} ip any {por} any")
+                            eos.write(f"{deci} ip {srcad} {destad} \n")
+                            print(f"{deci} ip {srcad} {destad}")
+        elif (protocol == 0) and (srcadd != 0)  and (port == 0) and (destadd == 0):    
                 for srcad in srcadds:
                     eos.write(f"{deci} ip {srcad} any \n")
                     print(f"{deci} ip {srcad} any ")
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport != 0) and (destadd == 0) and (destiadport == 0):    
-                eos.write(f"{deci} ip any  {srcadport} any \n")
-                print(f"{deci} ip any  {srcadport} any")
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport == 0) and (destadd != 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcadd == 0)  and (port != 0) and (destadd == 0):    
+            for por in ports:
+                eos.write(f"{deci} ip any any {por}\n")
+                print(f"{deci} ip any any {por}")
+                eos.write(f"{deci} ip any {por} any\n")
+                print(f"{deci} ip any {por} any")
+        elif (protocol == 0) and (srcadd == 0) and (destadd != 0) and (port == 0):
                 for destad in destadds:
                     eos.write(f"{deci} ip any {destad} \n")
                     print(f"{deci} ip any {destad}")
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport == 0) and (destadd == 0) and (destiadport != 0):
-                eos.write(f"{deci} ip any any  {destiadport} \n")
-                print(f"{deci} ip any any  {destiadport}")
-        elif (protocol == 0) and (srcadd != 0)  and (srcadport != 0) and (destadd != 0) and (destiadport == 0):
+        elif (protocol == 0) and (srcadd == 0) and (destadd == 0) and (port != 0):
+            for por in ports:
+                eos.write(f"{deci} ip any any {por}\n")
+                print(f"{deci} ip any any {por}")
+                eos.write(f"{deci} ip any {por} any\n")
+                print(f"{deci} ip any {por} any")
+        elif (protocol == 0) and (srcadd != 0)  and (port != 0) and (destadd != 0):
                 for srcad in srcadds:
                     for destad in destadds:
-                        eos.write(f"{deci} ip {srcad}  {srcadport} {destad} \n")
-                        print(f"{deci} ip {srcad}  {srcadport} {destad} ")
-        elif (protocol == 0) and (srcadd != 0)  and (srcadport != 0) and (destadd == 0) and (destiadport == 0):
+                        for por in ports:
+                            eos.write(f"{deci} ip any any {por}\n")
+                            print(f"{deci} ip any any {por}")
+                            eos.write(f"{deci} ip any {por} any\n")
+                            print(f"{deci} ip any {por} any")
+                            eos.write(f"{deci} ip {srcad} {destad} \n")
+                            print(f"{deci} ip {srcad} {destad} ")
+        elif (protocol == 0) and (srcadd != 0)  and (port != 0) and (destadd == 0):
                 for srcad in srcadds:
-                    eos.write(f"{deci} ip {srcad}  {srcadport} any \n")
-                    print(f"{deci} ip {srcad}  {srcadport} any ")
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport != 0) and (destadd != 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} ip any any {por}\n")
+                        print(f"{deci} ip any any {por}")
+                        eos.write(f"{deci} ip any {por} any\n")
+                        print(f"{deci} ip any {por} any")
+                        eos.write(f"{deci} ip {srcad} any \n")
+                        print(f"{deci} ip {srcad} any ")
+        elif (protocol == 0) and (srcadd == 0)  and (port != 0) and (destadd != 0):
                 for destad in destadds:
-                    eos.write(f"{deci} ip any  {srcadport} {destad}\n")
-                    print(f"{deci} ip any  {srcadport} {destad}")
-        elif (protocol == 0) and (srcadd != 0)  and (srcadport == 0) and (destadd != 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} ip any any {por}\n")
+                        print(f"{deci} ip any any {por}")
+                        eos.write(f"{deci} ip any {por} any\n")
+                        print(f"{deci} ip any {por} any")
+                        eos.write(f"{deci} ip any {destad}\n")
+                        print(f"{deci} ip any {destad}")
+        elif (protocol == 0) and (srcadd != 0)  and (port == 0) and (destadd != 0):
                 for srcad in srcadds:
                     for destad in destadds:
                         eos.write(f"{deci} ip {srcad} {destad} \n")
                         print(f"{deci} ip {srcad} {destad} ")
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport == 0) and (destadd == 0) and (destiadport != 0):  
-                eos.write(f"{deci} ip any any  {destiadport} \n")
-                print(f"{deci} ip any any  {destiadport}")
-        elif (protocol == 0) and (srcadd != 0)  and (srcadport == 0) and (destadd == 0) and (destiadport != 0):
-                for srcad in srcadds:
-                    eos.write(f"{deci} ip {srcad} any  {destiadport} \n")
-                    print(f"{deci} ip {srcad} any  {destiadport}")             
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport != 0) and (destadd == 0) and (destiadport == 0):
-                eos.write(f"{deci} ip any  {srcadport} any \n")
-                print(f"{deci} ip any  {srcadport} any ")
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport != 0) and (destadd != 0) and (destiadport != 0):  
+        elif (protocol == 0) and (srcadd == 0)  and (port != 0) and (destadd == 0):  
+            for por in ports:
+                eos.write(f"{deci} ip any any {por}\n")
+                print(f"{deci} ip any any {por}")
+                eos.write(f"{deci} ip any {por} any\n")
+                print(f"{deci} ip any {por} any")    
+        elif (protocol == 0) and (srcadd != 0)  and (port != 0) and (destadd == 0):
+            for srcad in srcadds:
+                for por in ports:
+                    eos.write(f"{deci} ip any any {por}\n")
+                    print(f"{deci} ip any any {por}")
+                    eos.write(f"{deci} ip any {por} any\n")
+                    print(f"{deci} ip any {por} any") 
+                    eos.write(f"{deci} ip {srcad} any \n")
+                    print(f"{deci} ip {srcad} any")             
+        elif (protocol == 0) and (srcadd == 0)  and (port != 0) and (destadd == 0):
+            for por in ports:
+                eos.write(f"{deci} ip any any {por}\n")
+                print(f"{deci} ip any any {por}")
+                eos.write(f"{deci} ip any {por} any\n")
+                print(f"{deci} ip any {por} any")
+        elif (protocol == 0) and (srcadd == 0)  and (port != 0) and (destadd != 0):  
                 for destad in destadds:
-                    eos.write(f"{deci} ip any  {srcadport} {destad}  {destiadport} \n")
-                    print(f"{deci} ip any  {srcadport} {destad}  {destiadport} ") 
-        elif (protocol == 0) and (srcadd != 0)  and (srcadport == 0) and (destadd != 0) and (destiadport != 0):           
+                    for por in ports:
+                        eos.write(f"{deci} ip any any {por}\n")
+                        print(f"{deci} ip any any {por}")
+                        eos.write(f"{deci} ip any {por} any\n")
+                        print(f"{deci} ip any {por} any")
+                        eos.write(f"{deci} ip any {destad}\n")
+                        print(f"{deci} ip any {destad}") 
+        elif (protocol == 0) and (srcadd != 0)  and (port != 0) and (destadd != 0):           
                 for srcad in srcadds:
                     for destad in destadds:
-                        eos.write(f"{deci} ip {srcad} {destad}  {destiadport}\n")
-                        print(f"{deci} ip {srcad} {destad}  {destiadport}")
-        elif (protocol == 0) and (srcadd != 0)  and (srcadport != 0) and (destadd == 0) and (destiadport != 0): 
+                        for por in ports:
+                            eos.write(f"{deci} ip any any {por}\n")
+                            print(f"{deci} ip any any {por}")
+                            eos.write(f"{deci} ip any {por} any\n")
+                            print(f"{deci} ip any {por} any")
+                            eos.write(f"{deci} ip {srcad} {destad}\n")
+                            print(f"{deci} ip {srcad} {destad}")
+        elif (protocol == 0) and (srcadd != 0)  and (port != 0) and (destadd == 0): 
                 for srcad in srcadds:
-                    eos.write(f"{deci} ip {srcad}  {srcadport} any  {destiadport}\n")
-                    print(f"{deci} ip {srcad}  {srcadport} any  {destiadport}")
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport != 0) and (destadd == 0) and (destiadport != 0):
+                    for por in ports:
+                        eos.write(f"{deci} ip any any {por}\n")
+                        print(f"{deci} ip any any {por}")
+                        eos.write(f"{deci} ip any {por} any\n")
+                        print(f"{deci} ip any {por} any")
+                        eos.write(f"{deci} ip {srcad} any \n")
+                        print(f"{deci} ip {srcad} any")
+        elif (protocol == 0) and (srcadd == 0)  and (port != 0) and (destadd == 0):
                 for srcad in srcadds:
-                    eos.write(f"{deci} ip any  {srcadport} any  {destiadport}\n")
-                    print(f"{deci} ip any  {srcadport} any  {destiadport}")
-        elif (protocol == 0) and (srcadd == 0)  and (srcadport == 0) and (destadd == 0) and (destiadport == 0):
+                    for por in ports:
+                        eos.write(f"{deci} ip any any {por}\n")
+                        print(f"{deci} ip any any {por}")
+                        eos.write(f"{deci} ip any {por} any\n")
+                        print(f"{deci} ip any {por} any")
+                        eos.write(f"{deci} ip any any\n")
+                        print(f"{deci} ip any any")
+        elif (protocol == 0) and (srcadd == 0)  and (port == 0) and (destadd == 0):
                 for srcad in srcadds:
                     for destad in destadds:
                         eos.write(f"{deci} ip any any\n")
@@ -603,6 +808,9 @@ def aegisaction():
             if dscp != 0:
                 eos.write(f"dscp {dscpno}\n")
                 print(f"dscp {dscpno}")
+            if frdclass != 0:
+                eos.write(f"set traffic class {frdclassno}\n")
+                print(f"set traffic class {frdclassno}")
             if count != 0:
                 eos.write("count\n")
                 print("count")
@@ -615,71 +823,52 @@ def aegisaction():
 
 def aegisprotocol():
     with open("eosaegisconf.csv","a") as eos:
-        try:
-            if srcport != 0 and destiport != 0:
-                if protocol != 0:
-                    for protoco in protocols:
-                        eos.write(f"protocol {protoco} source port {srcport} destination port {destiport}\n")
-                        print(f"protocol {protoco} source port {srcport} destination port {destiport}")
-                else:
-                    eos.write(f"protocol tcp source port {srcport} destination port {destiport}\n")
-                    eos.write(f"protocol udp source port {srcport} destination port {destiport}\n")
-                    print(f"protocol tcp source port {srcport} destination port {destiport}")
-                    print(f"protocol udp source port {srcport} destination port {destiport}")
-        except:
-            end = 1
-        try:        
-            if destiport != 0 and srcport == 0:
-                if protocol != 0:
-                    for protoco in protocols:
-                        eos.write(f"protocol {protoco} destination port {destiport}\n")
-                        print(f"protocol {protoco} destination port {destiport}")
-                else:
-                    eos.write(f"protocol tcp destination port {destiport}\n")
-                    eos.write(f"protocol udp destination port {destiport}\n")
-                    print(f"protocol tcp destination port {destiport}")
-                    print(f"protocol udp destination port {destiport}")
-        except:
-            end = 1
-        try:        
-            if destiport == 0 and srcport != 0:
-                if protocol != 0:
-                    for protoco in protocols:
-                        eos.write(f"protocol {protoco} source port {destiport}\n")
-                        print(f"protocol {protoco} source port {destiport}")
-                else:
-                    eos.write(f"protocol tcp source port {srcport}\n")
-                    eos.write(f"protocol udp source port {srcport}\n")
-                    print(f"protocol tcp source port {srcport}")
-                    print(f"protocol udp source port {srcport}")
-        except:
-            end = 1
-        try:
-            if protocol != 0 and port != 0:
-                rowcount  = 0
-                destrow = 0
-                for row in open(filename):
-                    #print(row)
-                    if (filtername in row) and (comment in row) and ("port" in row):
-                        portrow=rowcount    
-                    rowcount+= 1
-                #print(portrow)
-                rowcount  = 0
-                for row in open(filename):
-                    if (filtername in row) and (comment in row) and ("destination" or "source" in row):
-                        destrow=rowcount 
-                    rowcount+= 1
-                #print(destrow) 
-                if portrow > destrow:
-                    for protoco in protocols:
-                        eos.write(f"protocol {protoco} source port {port}\n")
-                        print(f"protocol {protoco} source port {port}")   
-                else:
-                    for protoco in protocols:
-                        eos.write(f"protocol {protoco} destination port {port}\n")
-                        print(f"protocol {protoco} destination port {port}")                
-        except:
-            end = 1            
+        if srcport != 0 and destiport != 0:
+            if protocol != 0:
+                for protoco in protocols:
+                    for destipor in destiports:
+                        for srcpor in srcports:
+                            eos.write(f"protocol {protoco} source port {srcpor} destination port {destipor}\n")
+                            print(f"protocol {protoco} source port {srcpor} destination port {destipor}")
+            else:
+                for destipor in destiports:
+                        for srcpor in srcports:
+                            eos.write(f"protocol tcp source port {srcpor} destination port {destipor}\n")
+                            eos.write(f"protocol udp source port {srcpor} destination port {destipor}\n")
+                            print(f"protocol tcp source port {srcpor} destination port {destipor}")
+                            print(f"protocol udp source port {srcpor} destination port {destipor}")       
+        if destiport != 0 and srcport == 0:
+            if protocol != 0:
+                for protoco in protocols:
+                    for destipor in destiports:
+                        eos.write(f"protocol {protoco} destination port {destipor}\n")
+                        print(f"protocol {protoco} destination port {destipor}")
+            else:
+                for destipor in destiports:
+                    eos.write(f"protocol tcp destination port {destipor}\n")
+                    eos.write(f"protocol udp destination port {destipor}\n")
+                    print(f"protocol tcp destination port {destipor}")
+                    print(f"protocol udp destination port {destipor}")     
+        if destiport == 0 and srcport != 0:
+            if protocol != 0:
+                for protoco in protocols:
+                    for destipor in destiports:
+                        eos.write(f"protocol {protoco} source port {destipor}\n")
+                        print(f"protocol {protoco} source port {destipor}")
+            else:
+                for srcpor in srcports:
+                    eos.write(f"protocol tcp source port {srcpor}\n")
+                    eos.write(f"protocol udp source port {srcpor}\n")
+                    print(f"protocol tcp source port {srcpor}")
+                    print(f"protocol udp source port {srcpor}")
+        if protocol != 0 and port != 0:    
+            for protoco in protocols:
+                for por in ports:
+                    eos.write(f"protocol {protoco} source port {por}\n")
+                    print(f"protocol {protoco} source port {por}")   
+                    eos.write(f"protocol {protoco} destination port {por}\n")
+                    print(f"protocol {protoco} destination port {por}")                
+           
 
 def aegisprefix():
     with open("eosaegisconf.csv","a") as eos:
@@ -802,11 +991,10 @@ def secondparse():
     global rowcount; rowcount  = 0
     global srcportjoinfinal; srcportjoinfinal = []
     global destasportjoinfinal; destasportjoinfinal = []
-    global srcadport; srcadport = 0
-    global destiadport; destiadport = 0
     global destas; destas = []
     global srcas; srcas = []
-    global dscpno; dscpno = 0
+    global dscpno; 
+    global frdclassno;
     if destiport != 0:
         for checkdestport in destiports:
             if ('-' in  checkdestport):
@@ -827,6 +1015,7 @@ def secondparse():
             elif ('-' not in checksrcport):
                 srcportjoins = f"eq {checksrcport}"
                 srcportjoinfinal.append(srcportjoins)
+    """
     srcrow = 0
     destrow = 0
     if port != 0:
@@ -839,11 +1028,12 @@ def secondparse():
                     srcrow = rowcount 
                 rowcount+= 1
         if destrow != 0:
-            destiadport = f"eq {port}"
+            port = f"eq {port}"
         elif srcrow != 0:
-            srcadport = f"eq {port}"
+            port = f"eq {port}"
         else:
-            destiadport = f"eq {port}"
+            port = f"eq {port}"
+    """
     #parsing ip address from prefix list if any - prefixlistparse
     if destprelist != 0:
         with open(filename,"r") as file2:
@@ -881,11 +1071,54 @@ def secondparse():
                             end=1;
     #dscptable
     if dscp != 0:
+        if dscp == 'af11':
+            dscpno = 10
+        if dscp == 'af12':
+            dscpno = 12
+        if dscp == 'af13':
+            dscpno = 14
+        if dscp == 'af21':
+            dscpno = 18
+        if dscp == 'af22':
+            dscpno = 20
+        if dscp == 'af23':
+            dscpno = 22
+        if dscp == 'af31':
+            dscpno = 26
+        if dscp == 'af32':
+            dscpno = 28
+        if dscp == 'af33':
+            dscpno = 30
         if dscp == 'af41':
             dscpno = 34
+        if dscp == 'af42':
+            dscpno = 36
+        if dscp == 'af43':
+            dscpno = 38
+        if dscp == 'cs1':
+            dscpno = 8
+        if dscp == 'cs2':
+            dscpno = 16
+        if dscp == 'cs3':
+            dscpno = 24
+        if dscp == 'cs4':
+            dscpno = 32
+        if dscp == 'cs5':
+            dscpno = 40
+        if dscp == 'cs6':
+            dscpno = 48
+        if dscp == 'cs7':
+            dscpno = 56
+        if (dscp == 'default') or (dscp == 'be'):
+            dscpno = 0   
         if dscp == 'ef':
             dscpno = 46
-        
+
+    #forwarding-class check
+    if frdclass != 0:
+        if frdclass in qosnames:
+            frdclassnoindex = qosnames.index(frdclass)
+            frdclassno = qosvalues[frdclassnoindex]
 
 #parse junos command for filtername
 def firstparse():
@@ -966,7 +1199,10 @@ def firstparse():
                                 o = r1[fi:l]
                                 g = o.split(' ')
                                 port = g[0].strip()
-                                ports.append(port)
+                                if args.output == "aegis":
+                                    ports.append(port)
+                                elif args.output == "acl":
+                                    ports.append(f"eq {port}")
                                 print(f"Found port: {ports}")
                         except:
                                 end=1;
@@ -1099,14 +1335,14 @@ def firstparse():
 
 def aegisconvert():
     print("\n Aegis Conversion started...")
-    print("Generating aegis Conf....")   
+    print(" Generating aegis Conf....")   
     aegisfieldset()  
     aegistrafficpolicy()
     aegisprefix()
     aegisprotocol()
     aegisaction()
     print("\n Completed configuration generation....")
-
+    
 def convert():
     for filters in filterfinal:
         sep = filters.split(';')
@@ -1118,7 +1354,7 @@ def convert():
         print(f"Found Term: {comment}")
         firstparse()
         secondparse()
-        print("\nComplete Input:")
+        print("\n Complete Input:")
         for inputs in completeinput:
             print(inputs.strip())
         if args.output == "aegis":
@@ -1173,6 +1409,57 @@ def getfilternames():
             'trace': trace
         }))
 
+#Convert juniper QOS conf to arista QOS conf. Do this before aegiscli conversion because we may use this in aegiscli
+def qosconf():
+    global qosvalues; qosvalues =[]
+    global qosnames; qosnames = []
+    global qosmatchdict; qosmatchdict = {}
+    qosrows = []
+    print("\n Converting and Generating QOS arista configuration....")
+    with open('junosconf.csv','r') as qosin:
+        qosinc = qosin.readlines();
+        for qosrow in qosinc:
+            if "set class-of-service forwarding-classes queue" in qosrow:
+                a = re.search(rf'\b(forwarding-classes queue )\b', qosrow)
+                qosrows.append(qosrow)
+                fi = a.end(); 
+                l = len(qosrow)
+                o = qosrow[fi:l]
+                g = o.split(' ')
+                qosvalue = g[0].strip()
+                qosname = g[1].strip()
+                qosvalues.append(qosvalue)
+                qosnames.append(qosname)
+    #create a dictionary using values we got
+    n = 0
+    while n < len(qosvalues):
+        qosmatchdict.update({qosvalues[n]:qosnames[n]})
+        n = n+1;
+    print(f"\nFound QOS match: {qosmatchdict}")
+    print(f"\n Complete JUNOS QOS match input:")
+    for qosro in qosrows:
+        print(qosro.strip())
+    print("\n Generating Arista QOS match Configuration.....")
+    with open("eosaegisconf.csv","a") as eosqos:
+        eosqos.write(" ")
+        print(" ")
+    n = 0
+    while n < len(qosvalues):
+        print(f"\n JUNOS input for QOS '{qosvalues[n]}:{qosnames[n]}'")
+        with open('junosconf.csv','r') as qosin:
+            qosinc = qosin.readlines();
+            for qosrow in qosinc:
+                if qosnames[n] in qosrow:
+                    if ' then ' not in qosrow:
+                        if ' from ' not in qosrow:
+                            print(qosrow.strip())
+        print(f"\n Generating Arista Config for QOS '{qosvalues[n]}:{qosnames[n]}'")
+        with open("eosaegisconf.csv","a") as eosqos:
+            eosqos.write(" ")
+            print(" ")
+        n = n+1
+    
+
 #read the csv and do precheck
 def precheck():
     #check the input and output given
@@ -1182,15 +1469,16 @@ def precheck():
     if (args.input != "junos"):
         print("Please type only junos for input")
         exit()
+    open("eosqosconf.csv","w")
     open("eosaclconf.csv","w")
     open("eosaegisconf.csv","w")
     global filename
     #end= 1-continue ; 0-stop
     global end
-    print("outputs in 'eosaclconf.csv' & 'eosaegisconf.csv'")
+    print(" Outputs in 'eosaclconf.csv' & 'eosaegisconf.csv' & 'eosqosconf.csv'")
     #this if is for temporary until we complete aegis and acl program complete parallely
     filename = "junosconf.csv"
-    print(f"Reading file {filename} for inputs")
+    print(f" Reading file {filename} for inputs")
     try:
         open(filename,"r")
     except:
@@ -1206,7 +1494,7 @@ def precheck():
                 continue
     if end == 1:
         #get all filternames and terms
-        print("Input verification completed")
+        print(" Input verification completed")
     else:
         print(f"Can't find keywords filter and term in csv file. Please check the csv file {filename}")
         exit()
@@ -1229,6 +1517,8 @@ def main():
     choice()
     #do precheck to make sure the junos conf in the csv file
     precheck()
+    #Convert juniper QOS conf to arista QOS conf. Do this before aegiscli conversion because we may use this in aegiscli.
+    qosconf()
     #get all filternames and terms
     getfilternames()
     #conversion step and process
