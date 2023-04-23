@@ -1,21 +1,25 @@
 #! /usr/bin/env python3
 #SHEBANG
+
+#All modules used in this code are default modules no pip instal _ needed
 import re
-#read this prgram from bottom to top for understanding
 import csv
 import argparse
-#add time if you need slow in output generation on screen
-#import time
+
+#read this prgram from bottom to top for understanding
+#More infromation check: https://sites.google.com/arista.com/msft-team/interns-embark-portal-projects-and-trainings/dinesh-kumardp-2022/projects/moving-to-aegis-cli
+
 
 #if count in decision on acl
 def aclcount():
     if count != 0:
-        with open("eosaclconf.csv","a") as eos:
+        with open(outputfilename,"a") as eos:
             eos.write("counter per-entry\n")
             print("counter per-entry")
-            
+
+#aclcondition contains all main conversion            
 def aclcondition():
-    with open("eosaclconf.csv","a") as eos:
+    with open(outputfilename,"a") as eos:
         #with protocol and source and destination prefixlist
         #if protocol, source prefix list, source-port(srcport), destination prefix list, destination-port(destiport) are present ; port after source(port), port after destination(port) are not present;
         if (protocol != 0) and (srcprelist != 0)  and (srcport != 0) and (destprelist != 0) and (destiport != 0) and (port == 0):
@@ -787,7 +791,7 @@ def aclcondition():
                         print(f"{deci} ip any any")
 
 def aclname():
-    with open("eosaclconf.csv","a") as eos:
+    with open(outputfilename,"a") as eos:
         eos.write(f"\nip access-list {filtername}\n")
         eos.write(f"!!{comment}\n")
         print(f"ip access-list {filtername}")
@@ -802,10 +806,10 @@ def aclconvert():
 
 def aegisaction():
     try:
-        with open("eosaegisconf.csv","a") as eos:
+        with open(outputfilename,"a") as eos:
             eos.write("actions\n")
             print("actions")
-            if dscp != 0:
+            if dscp != None:
                 eos.write(f"dscp {dscpno}\n")
                 print(f"dscp {dscpno}")
             if frdclass != 0:
@@ -822,7 +826,7 @@ def aegisaction():
         end = 1
 
 def aegisprotocol():
-    with open("eosaegisconf.csv","a") as eos:
+    with open(outputfilename,"a") as eos:
         if srcport != 0 and destiport != 0:
             if protocol != 0:
                 for protoco in protocols:
@@ -871,7 +875,7 @@ def aegisprotocol():
            
 
 def aegisprefix():
-    with open("eosaegisconf.csv","a") as eos:
+    with open(outputfilename,"a") as eos:
         try:
             if srcprelist != 0:
                 eos.write(f"source prefix field-set {srcprelist}\n")
@@ -898,7 +902,7 @@ def aegisprefix():
             end = 1
 
 def aegistrafficpolicy():
-    with open("eosaegisconf.csv","a") as eos:
+    with open(outputfilename,"a") as eos:
         eos.write(f"traffic-policy {filtername}\n")
         print(f"traffic-policy {filtername}")
         localend = 1
@@ -948,7 +952,7 @@ def aegistrafficpolicy():
         
 def aegisfieldset():
     if srcadd != 0:
-        with open("eosaegisconf.csv","a") as eos:
+        with open(outputfilename,"a") as eos:
             eos.write("traffic-policies\n")
             print("traffic-policies")
             eos.write(f"field-set ipv4 prefix {filtername}-source\n")
@@ -957,7 +961,7 @@ def aegisfieldset():
                 eos.write(f"{srcad}\n")
                 print(f"{srcad}")
     if destadd != 0:
-        with open("eosaegisconf.csv","a") as eos:
+        with open(outputfilename,"a") as eos:
             eos.write("traffic-policies\n")
             print("traffic-policies")
             eos.write(f"field-set ipv4 prefix {filtername}-destination\n")
@@ -966,7 +970,7 @@ def aegisfieldset():
                 eos.write(f"{destad}\n")
                 print(f"{destad}")
     if destprelist != 0:
-        with open("eosaegisconf.csv","a") as eos:
+        with open(outputfilename,"a") as eos:
             eos.write("traffic-policies\n")
             print("traffic-policies")
             eos.write(f"field-set ipv4 prefix {destprelist}\n")
@@ -976,7 +980,7 @@ def aegisfieldset():
                 eos.write(f"{dest}\n")
                 print(f"{dest}")
     if srcprelist != 0:
-        with open("eosaegisconf.csv","a") as eos:
+        with open(outputfilename,"a") as eos:
             eos.write("traffic-policies\n")
             print("traffic-policies")
             eos.write(f"field-set ipv4 prefix {srcprelist}\n")
@@ -1015,32 +1019,12 @@ def secondparse():
             elif ('-' not in checksrcport):
                 srcportjoins = f"eq {checksrcport}"
                 srcportjoinfinal.append(srcportjoins)
-    """
-    srcrow = 0
-    destrow = 0
-    if port != 0:
-        rowcount  = 0
-        for row in open(filename):
-            if (filtername in row) and (comment in row):
-                if "destination" in row:
-                    destrow=rowcount
-                elif "source" in row:
-                    srcrow = rowcount 
-                rowcount+= 1
-        if destrow != 0:
-            port = f"eq {port}"
-        elif srcrow != 0:
-            port = f"eq {port}"
-        else:
-            port = f"eq {port}"
-    """
     #parsing ip address from prefix list if any - prefixlistparse
     if destprelist != 0:
-        with open(filename,"r") as file2:
+        with open(inputfilename,"r") as file2:
             n2 = file2.readlines();
             for destprelis in destprelists:
                 for r2 in n2:
-                    #print(r2)
                     try:
                         if destprelis in r2:
                             a = re.search(rf'\b( prefix-list {destprelis} )\b',r2)
@@ -1051,9 +1035,9 @@ def secondparse():
                             desta = g[0].strip()
                             destas.append(desta)
                     except:
-                            end=1;
+                        end = 1
     if srcprelist != 0:
-        with open(filename,"r") as file2:
+        with open(inputfilename,"r") as file2:
             n2 = file2.readlines();
             for srcprelis in srcprelists:
                 for r2 in n2:
@@ -1068,9 +1052,9 @@ def secondparse():
                             srca = g[0].strip()
                             srcas.append(srca)
                     except:
-                            end=1;
+                        end = 1
     #dscptable
-    if dscp != 0:
+    if dscp != None:
         if dscp == 'af11':
             dscpno = 10
         if dscp == 'af12':
@@ -1109,7 +1093,7 @@ def secondparse():
             dscpno = 48
         if dscp == 'cs7':
             dscpno = 56
-        if (dscp == 'default') or (dscp == 'be'):
+        if (dscp == 'default') or (dscp == 'be') or (dscp == '0'):
             dscpno = 0   
         if dscp == 'ef':
             dscpno = 46
@@ -1146,8 +1130,8 @@ def firstparse():
         global destprelists; destprelists = []
         global rouins; rouins = 0
         global frdclass; frdclass = 0
-        global dscp; dscp = 0
-        with open(filename,"r") as file1:
+        global dscp; dscp = None
+        with open(inputfilename,"r") as file1:
             n1 = file1.readlines();
             global r1
             for r1 in n1:
@@ -1322,7 +1306,7 @@ def firstparse():
         tb = ex.__traceback__
         while tb is not None:
             trace.append({
-                "filename": tb.tb_frame.f_code.co_filename,
+                "inputfilename": tb.tb_frame.f_code.co_inputfilename,
                 "name": tb.tb_frame.f_code.co_name,
                 "lineno": tb.tb_lineno
             })
@@ -1342,35 +1326,91 @@ def aegisconvert():
     aegisprotocol()
     aegisaction()
     print("\n Completed configuration generation....")
-    
+
+def qosparse():
+    global qosvalues; qosvalues =[]
+    global qosnames; qosnames = []
+    global qosmatchdict; qosmatchdict = {}
+    global qosrows; qosrows = []
+    print("\n Converting and Generating QOS arista configuration....")
+    with open(inputfilename,'r') as qosin:
+        qosinc = qosin.readlines();
+        for qosrow in qosinc:
+            if "set class-of-service forwarding-classes queue" in qosrow:
+                a = re.search(rf'\b(forwarding-classes queue )\b', qosrow)
+                qosrows.append(qosrow)
+                fi = a.end(); 
+                l = len(qosrow)
+                o = qosrow[fi:l]
+                g = o.split(' ')
+                qosvalue = g[0].strip()
+                qosname = g[1].strip()
+                qosvalues.append(qosvalue)
+                qosnames.append(qosname)
+
+#Convert juniper QOS conf to arista QOS conf. Do this before aegiscli conversion because we may use this in aegiscli
+def qosconf():
+    #create a dictionary using values we got
+    n = 0
+    while n < len(qosvalues):
+        qosmatchdict.update({qosvalues[n]:qosnames[n]})
+        n = n+1;
+    print(f"\nFound QOS match: {qosmatchdict}")
+    print(f"\n Complete JUNOS QOS match input:")
+    for qosro in qosrows:
+        print(qosro.strip())
+    print("\n Generating Arista QOS match Configuration.....")
+    with open(outputfilename,"a") as eosqos:
+        eosqos.write(" ")
+        print(" ")
+    n = 0
+    while n < len(qosvalues):
+        print(f"\n JUNOS input for QOS '{qosvalues[n]}:{qosnames[n]}'")
+        with open('junosconf.csv','r') as qosin:
+            qosinc = qosin.readlines();
+            for qosrow in qosinc:
+                if qosnames[n] in qosrow:
+                    if ' then ' not in qosrow:
+                        if ' from ' not in qosrow:
+                            print(qosrow.strip())
+        print(f"\n Generating Arista Config for QOS '{qosvalues[n]}:{qosnames[n]}'")
+        with open(outputfilename,"a") as eosqos:
+            eosqos.write(" ")
+            print(" ")
+        n = n+1
+
 def convert():
-    for filters in filterfinal:
-        sep = filters.split(';')
-        global filtername
-        global comment
-        filtername = sep[0]
-        comment = sep[1]
-        print(f"\nFound filtername: {filtername}")
-        print(f"Found Term: {comment}")
-        firstparse()
-        secondparse()
-        print("\n Complete Input:")
-        for inputs in completeinput:
-            print(inputs.strip())
-        if args.output == "aegis":
-            aegisconvert()
-            #time.sleep is added for slow output generation so that user can read the output easily
-            #time.sleep(2)
-        #ACL is not fully completed need to work on function arrangements
-        elif args.output == "acl":
-            aclconvert()
-            #time.sleep(2)
+    #if output is qos just do only qos conversion
+    if args.output == "qos":
+        qosparse()
+        qosconf()
+    #if output is aegis or acl get filtername and start the firewall filter conversion
+    elif (args.output == "aegis") or (args.output =="acl"):    
+        for filters in filterfinal:
+            sep = filters.split(';')
+            global filtername
+            global comment
+            filtername = sep[0]
+            comment = sep[1]
+            print(f"\nFound filtername: {filtername}")
+            print(f"Found Term: {comment}")
+            qosparse()
+            firstparse()
+            secondparse()
+            print("\n Complete Input:")
+            for inputs in completeinput:
+                print(inputs.strip())
+            if args.output == "aegis":
+                aegisconvert()
+            #ACL is not fully completed need to work on function arrangements
+            elif args.output == "acl":
+                aclconvert()
 
 #parse junos command for filtername
 def getfilternames():
     try:
         filternames = []
-        with open(filename,"r") as file:
+        with open(inputfilename,"r") as file:
             csvreader = csv.reader(file)
             for row in csvreader:
                 if (" filter" in row[0]) and (" term" in row[0]):
@@ -1398,7 +1438,7 @@ def getfilternames():
         tb = ex.__traceback__
         while tb is not None:
             trace.append({
-                "filename": tb.tb_frame.f_code.co_filename,
+                "inputfilename": tb.tb_frame.f_code.co_inputfilename,
                 "name": tb.tb_frame.f_code.co_name,
                 "lineno": tb.tb_lineno
             })
@@ -1408,83 +1448,52 @@ def getfilternames():
             'message': str(ex),
             'trace': trace
         }))
-
-#Convert juniper QOS conf to arista QOS conf. Do this before aegiscli conversion because we may use this in aegiscli
-def qosconf():
-    global qosvalues; qosvalues =[]
-    global qosnames; qosnames = []
-    global qosmatchdict; qosmatchdict = {}
-    qosrows = []
-    print("\n Converting and Generating QOS arista configuration....")
-    with open('junosconf.csv','r') as qosin:
-        qosinc = qosin.readlines();
-        for qosrow in qosinc:
-            if "set class-of-service forwarding-classes queue" in qosrow:
-                a = re.search(rf'\b(forwarding-classes queue )\b', qosrow)
-                qosrows.append(qosrow)
-                fi = a.end(); 
-                l = len(qosrow)
-                o = qosrow[fi:l]
-                g = o.split(' ')
-                qosvalue = g[0].strip()
-                qosname = g[1].strip()
-                qosvalues.append(qosvalue)
-                qosnames.append(qosname)
-    #create a dictionary using values we got
-    n = 0
-    while n < len(qosvalues):
-        qosmatchdict.update({qosvalues[n]:qosnames[n]})
-        n = n+1;
-    print(f"\nFound QOS match: {qosmatchdict}")
-    print(f"\n Complete JUNOS QOS match input:")
-    for qosro in qosrows:
-        print(qosro.strip())
-    print("\n Generating Arista QOS match Configuration.....")
-    with open("eosaegisconf.csv","a") as eosqos:
-        eosqos.write(" ")
-        print(" ")
-    n = 0
-    while n < len(qosvalues):
-        print(f"\n JUNOS input for QOS '{qosvalues[n]}:{qosnames[n]}'")
-        with open('junosconf.csv','r') as qosin:
-            qosinc = qosin.readlines();
-            for qosrow in qosinc:
-                if qosnames[n] in qosrow:
-                    if ' then ' not in qosrow:
-                        if ' from ' not in qosrow:
-                            print(qosrow.strip())
-        print(f"\n Generating Arista Config for QOS '{qosvalues[n]}:{qosnames[n]}'")
-        with open("eosaegisconf.csv","a") as eosqos:
-            eosqos.write(" ")
-            print(" ")
-        n = n+1
     
-
 #read the csv and do precheck
 def precheck():
+    global outputfilename
+    global inputfilename
+    #end= 1-continue ; 0-stop
+    global end
     #check the input and output given
-    if (args.output != "aegis") and (args.output != "acl"):
-        print("Please type only aegis or acl for output")
+    if (args.output != "aegis") and (args.output != "acl") and (args.output != "qos"):
+        print("Please type only aegis or acl or qos for output")
         exit()
     if (args.input != "junos"):
         print("Please type only junos for input")
         exit()
-    open("eosqosconf.csv","w")
-    open("eosaclconf.csv","w")
-    open("eosaegisconf.csv","w")
-    global filename
-    #end= 1-continue ; 0-stop
-    global end
-    print(" Outputs in 'eosaclconf.csv' & 'eosaegisconf.csv' & 'eosqosconf.csv'")
-    #this if is for temporary until we complete aegis and acl program complete parallely
-    filename = "junosconf.csv"
-    print(f" Reading file {filename} for inputs")
+    #if input filename is not given default - eosaegisconf.csv or eosaclconf.csv will be used
+    if  (args.outputfilename == None):
+        if args.output == "aegis":
+            outputfilename = "eosaegisconf.csv"
+        elif args.output == "acl":
+            outputfilename = "eosaclconf.csv"
+        elif args.output == "qos":
+            outputfilename = "eosqosconf.csv"
+    elif (args.outputfilename != None):
+        if '.csv' not in args.outputfilename:
+            print(" Output filename must have '.csv' ex:eosaclconf.csv")
+            exit()
+        outputfilename = args.outputfilename
+    #if output filename is not given default - junosconf.csv will be used
+    if  (args.inputfilename == None):
+        if args.input == "junos":
+            inputfilename = "junosconf.csv"
+    elif (args.inputfilename != None):
+        if '.csv' not in args.inputfilename:
+            print(" Output filename must have '.csv' ex:junosconf.csv")
+            exit()
+        inputfilename = args.inputfilename
+    #open("eosqosconf.csv","w")
+    open(outputfilename,"w")
+    print(f" Outputs stored in {outputfilename}")
+    print(f" Reading file {inputfilename} for inputs")
     try:
-        open(filename,"r")
+        open(inputfilename,"r")
     except:
-        print("Error: 'junosconf.csv' must be in same folder or under '~/' if you run program from that location")
+        print(f"Error: {inputfilename} must be in same folder or under '~/' if you run program from that location")
         exit()
-    with open(filename,"r") as file:
+    with open(inputfilename,"r") as file:
         csvreader = csv.reader(file)
         for row in csvreader:
             if ("filter" in row[0]) and ("term" in row[0]):
@@ -1496,18 +1505,22 @@ def precheck():
         #get all filternames and terms
         print(" Input verification completed")
     else:
-        print(f"Can't find keywords filter and term in csv file. Please check the csv file {filename}")
+        print(f"Can't find keywords filter and term in csv file. Please check the csv file {inputfilename}")
         exit()
 
-#choose input(junosconf) and output(aegis or acl)
+#choose input(junosconf) and output(aegis or acl) and inputfilename(optional default name is eosqosconf.csv or eosaclconf.csv or eosaegisconf.csv)
 def choice():
     parser = argparse.ArgumentParser(description='Process some integers.')
     #inputs
-    #1)junos 2)aegis 3)acl
-    parser.add_argument('input', help='Type of input given is junos or aegis or acl.')
+    #1)junos
+    parser.add_argument('input', help='Type of input given is junos')
+    #inputfilename
+    parser.add_argument('--inputfilename', help='Optional input filename, if not given default will be used')
     #outputs
-    #1)junos 2)aegis 3)acl
-    parser.add_argument('output', help='Type of output needed is junos or aegis or acl.')
+    #1)qos 2)aegis 3)acl
+    parser.add_argument('output', help='Type of output needed is qos or aegis or acl.')
+    #outputfilename
+    parser.add_argument('--outputfilename', help='Optional output filename, if not given default will be used')
     global args
     args = parser.parse_args()
     
@@ -1517,8 +1530,6 @@ def main():
     choice()
     #do precheck to make sure the junos conf in the csv file
     precheck()
-    #Convert juniper QOS conf to arista QOS conf. Do this before aegiscli conversion because we may use this in aegiscli.
-    qosconf()
     #get all filternames and terms
     getfilternames()
     #conversion step and process
